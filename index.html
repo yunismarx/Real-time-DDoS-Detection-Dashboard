@@ -24,8 +24,7 @@
             background-color: var(--dark-bg);
             color: #e0e0e0;
             font-family: 'Rajdhani', sans-serif;
-            overflow: hidden;
-            /* Main body hidden, inner sections scroll */
+            overflow: hidden; /* Main body hidden, inner sections scroll */
             height: 100vh;
             width: 100vw;
             cursor: default;
@@ -100,23 +99,13 @@
         }
 
         @keyframes glitch-anim-1 {
-            0% {
-                clip: rect(20px, 9999px, 15px, 0);
-            }
-
-            100% {
-                clip: rect(70px, 9999px, 90px, 0);
-            }
+            0% { clip: rect(20px, 9999px, 15px, 0); }
+            100% { clip: rect(70px, 9999px, 90px, 0); }
         }
 
         @keyframes glitch-anim-2 {
-            0% {
-                clip: rect(80px, 9999px, 30px, 0);
-            }
-
-            100% {
-                clip: rect(40px, 9999px, 60px, 0);
-            }
+            0% { clip: rect(80px, 9999px, 30px, 0); }
+            100% { clip: rect(40px, 9999px, 60px, 0); }
         }
 
         /* --- GLASS & CARDS --- */
@@ -150,7 +139,7 @@
 
         /* --- NAVIGATION CONTROLS --- */
         .nav-control {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.8);
             border: 1px solid var(--neon-blue);
             color: var(--neon-blue);
             cursor: pointer;
@@ -185,25 +174,22 @@
             pointer-events: none;
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform: scale(0.95) translateY(20px);
-
+            
             /* Flex layout for centering content */
             display: flex;
             flex-direction: column;
             align-items: center;
-
-            /* Responsive Padding for Header/Footer safety */
-            padding-top: 70px;
-            /* Header height + buffer */
-            padding-bottom: 90px;
-            /* Footer height + buffer */
+            
+            /* UPDATED: Increased bottom padding significantly for mobile */
+            padding-top: 80px; 
+            padding-bottom: 150px; /* Increased from 90px to 150px to clear the nav bar */
             padding-left: 1rem;
             padding-right: 1rem;
 
             /* Internal Scroll handling */
             overflow-y: auto;
             overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            /* Smooth scroll on iOS */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
         }
 
         .page-section.active-page {
@@ -217,11 +203,9 @@
         .page-section::-webkit-scrollbar {
             width: 4px;
         }
-
         .page-section::-webkit-scrollbar-track {
             background: transparent;
         }
-
         .page-section::-webkit-scrollbar-thumb {
             background: rgba(0, 243, 255, 0.3);
             border-radius: 4px;
@@ -256,7 +240,6 @@
         .tech-corners {
             position: relative;
         }
-
         .tech-corners::before,
         .tech-corners::after {
             content: '';
@@ -267,17 +250,11 @@
             border-style: solid;
             transition: all 0.3s;
         }
-
         .tech-corners::before {
-            top: 0;
-            left: 0;
-            border-width: 2px 0 0 2px;
+            top: 0; left: 0; border-width: 2px 0 0 2px;
         }
-
         .tech-corners::after {
-            bottom: 0;
-            right: 0;
-            border-width: 0 2px 2px 0;
+            bottom: 0; right: 0; border-width: 0 2px 2px 0;
         }
 
         /* --- ANIMATIONS --- */
@@ -286,35 +263,21 @@
             transform: translateY(20px);
             transition: all 0.6s ease-out;
         }
-
         .active-page .anim-element {
             opacity: 1;
             transform: translateY(0);
         }
-
-        .active-page .anim-delay-1 {
-            transition-delay: 100ms;
-        }
-
-        .active-page .anim-delay-2 {
-            transition-delay: 200ms;
-        }
-
-        .active-page .anim-delay-3 {
-            transition-delay: 300ms;
-        }
-
-        .active-page .anim-delay-4 {
-            transition-delay: 400ms;
-        }
+        .active-page .anim-delay-1 { transition-delay: 100ms; }
+        .active-page .anim-delay-2 { transition-delay: 200ms; }
+        .active-page .anim-delay-3 { transition-delay: 300ms; }
+        .active-page .anim-delay-4 { transition-delay: 400ms; }
 
         /* --- RESPONSIVE ADJUSTMENTS --- */
         @media (min-width: 768px) {
             .page-section {
-                justify-content: center;
-                /* Center vertically on desktop */
+                justify-content: center; /* Center vertically on desktop */
                 padding-top: 80px;
-                padding-bottom: 60px;
+                padding-bottom: 80px; /* Standard padding for desktop */
             }
         }
     </style>
@@ -342,12 +305,11 @@
                 <span class="text-gray-600">|</span>
                 <span class="text-blue-400 text-xs hidden sm:inline">PING: 0.4ms</span>
             </div>
-
+            
             <!-- Right Side -->
             <div class="flex items-center gap-4 text-xs md:text-sm">
                 <span id="page-indicator" class="text-neon-blue font-bold tracking-widest">PG 01/07</span>
-                <div class="text-gray-500 hidden md:block text-[10px] border border-gray-700 px-2 py-0.5 rounded">SECURE
-                </div>
+                <div class="text-gray-500 hidden md:block text-[10px] border border-gray-700 px-2 py-0.5 rounded">SECURE</div>
             </div>
         </div>
     </nav>
@@ -357,7 +319,7 @@
 
         <!-- PAGE 1: HERO -->
         <section class="page-section active-page" id="page-1">
-
+            
             <!-- Floating Label (Desktop Only) -->
             <div class="absolute top-24 left-10 opacity-60 hidden lg:block anim-element">
                 <div class="text-[10px] font-mono text-gray-500 border-l border-gray-700 pl-3 leading-loose">
@@ -369,70 +331,51 @@
 
             <div class="text-center w-full max-w-5xl px-2 md:px-6 z-10 anim-element flex flex-col items-center">
                 <!-- University Title -->
-                <h3 class="text-xs md:text-lg lg:text-xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of
-                    Baghdad</h3>
-                <h4 class="text-[10px] md:text-base text-gray-500 mb-6 md:mb-10 font-mono">College of Science | Dept. of
-                    Artificial Intelligence</h4>
+                <h3 class="text-xs md:text-lg lg:text-xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of Baghdad</h3>
+                <h4 class="text-[10px] md:text-base text-gray-500 mb-6 md:mb-10 font-mono">College of Science | Dept. of Artificial Intelligence</h4>
 
                 <!-- Main Hero Box -->
                 <div class="relative group w-full max-w-xs sm:max-w-md md:max-w-3xl mb-8 md:mb-12">
-                    <div
-                        class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-60 transition duration-1000">
-                    </div>
-                    <div
-                        class="relative bg-black/90 ring-1 ring-gray-800 rounded-lg p-6 md:p-12 tech-corners flex flex-col items-center">
-                        <h1
-                            class="text-3xl sm:text-5xl md:text-7xl font-bold neon-text-blue leading-tight glitch-wrapper mb-3 md:mb-4">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
+                    <div class="relative bg-black/90 ring-1 ring-gray-800 rounded-lg p-6 md:p-12 tech-corners flex flex-col items-center">
+                        <h1 class="text-3xl sm:text-5xl md:text-7xl font-bold neon-text-blue leading-tight glitch-wrapper mb-3 md:mb-4">
                             <span class="glitch" data-text="AI & BIG DATA">AI & BIG DATA</span>
                         </h1>
-                        <h2
-                            class="text-sm sm:text-lg md:text-2xl lg:text-3xl text-white tracking-wider font-light mb-4">
+                        <h2 class="text-sm sm:text-lg md:text-2xl lg:text-3xl text-white tracking-wider font-light mb-4">
                             INTRUSION DETECTION SYSTEM
                         </h2>
-                        <div
-                            class="text-[10px] sm:text-xs md:text-base text-gray-400 font-mono bg-gray-900/50 px-3 py-1 rounded border border-gray-800">
+                        <div class="text-[10px] sm:text-xs md:text-base text-gray-400 font-mono bg-gray-900/50 px-3 py-1 rounded border border-gray-800">
                             Hybrid Approach for Real-Time Threat Analysis
                         </div>
                     </div>
                 </div>
 
                 <!-- Quote Box -->
-                <div
-                    class="glass-panel p-4 md:p-6 w-full max-w-2xl mx-auto mb-8 anim-element anim-delay-1 border-l-4 border-blue-500 text-left">
+                <div class="glass-panel p-4 md:p-6 w-full max-w-2xl mx-auto mb-8 anim-element anim-delay-1 border-l-4 border-blue-500 text-left">
                     <div class="text-[10px] text-blue-500 font-mono mb-2">MISSION STATEMENT</div>
                     <p class="text-sm md:text-lg text-gray-300 italic leading-relaxed">
-                        "Transforming cybersecurity from a reactive response to an intelligent, proactive defense system
-                        capable of processing millions of network flows in real-time."
+                        "Transforming cybersecurity from a reactive response to an intelligent, proactive defense system capable of processing millions of network flows in real-time."
                     </p>
                 </div>
 
                 <!-- Team Grid -->
                 <div class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 text-left">
-                    <div
-                        class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-2 flex items-center gap-3 sm:block">
-                        <div
-                            class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center sm:mb-2 text-xs border border-blue-500/30">
-                            <i class="fas fa-user"></i></div>
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-2 flex items-center gap-3 sm:block">
+                        <div class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center sm:mb-2 text-xs border border-blue-500/30"><i class="fas fa-user"></i></div>
                         <div>
                             <div class="text-[10px] text-blue-500 font-mono">Researcher</div>
                             <div class="font-bold text-sm md:text-lg">Yunis Jasim</div>
                         </div>
                     </div>
-                    <div
-                        class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-3 flex items-center gap-3 sm:block">
-                        <div
-                            class="w-8 h-8 rounded-full bg-purple-900/50 flex items-center justify-center sm:mb-2 text-xs border border-purple-500/30">
-                            <i class="fas fa-user"></i></div>
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-3 flex items-center gap-3 sm:block">
+                        <div class="w-8 h-8 rounded-full bg-purple-900/50 flex items-center justify-center sm:mb-2 text-xs border border-purple-500/30"><i class="fas fa-user"></i></div>
                         <div>
                             <div class="text-[10px] text-purple-500 font-mono">Researcher</div>
                             <div class="font-bold text-sm md:text-lg">Zahraa Hussein</div>
                         </div>
                     </div>
-                    <div
-                        class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-4 flex items-center gap-3 sm:block">
-                        <div
-                            class="w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center sm:mb-2 text-xs border border-green-500/30">
-                            <i class="fas fa-user"></i></div>
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-4 flex items-center gap-3 sm:block">
+                        <div class="w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center sm:mb-2 text-xs border border-green-500/30"><i class="fas fa-user"></i></div>
                         <div>
                             <div class="text-[10px] text-green-500 font-mono">Researcher</div>
                             <div class="font-bold text-sm md:text-lg">Suliman Mohammed</div>
@@ -447,44 +390,36 @@
             <div class="w-full max-w-6xl mx-auto">
                 <div class="text-center mb-6 md:mb-12 anim-element">
                     <h2 class="text-xl md:text-4xl font-bold text-white mb-2">CONTEXT & SOLUTION</h2>
-                    <p class="text-gray-500 font-mono text-[10px] md:text-sm">STATUS: CRITICAL VULNERABILITY DETECTED
-                    </p>
+                    <p class="text-gray-500 font-mono text-[10px] md:text-sm">STATUS: CRITICAL VULNERABILITY DETECTED</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     <!-- Problem Card -->
-                    <div
-                        class="glass-panel p-5 md:p-10 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col h-full">
+                    <div class="glass-panel p-5 md:p-10 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col h-full">
                         <div class="flex items-center gap-3 mb-4 md:mb-6">
                             <i class="fas fa-exclamation-triangle text-2xl md:text-3xl text-red-500"></i>
                             <h2 class="text-lg md:text-2xl font-bold text-red-500">THE PROBLEM</h2>
                         </div>
                         <p class="text-gray-300 text-sm md:text-xl leading-relaxed mb-6">
-                            Traditional Intrusion Detection Systems (IDS) rely on <span
-                                class="text-red-400 font-mono bg-red-900/20 px-1 rounded">static signatures</span>. They
-                            are blind to Zero-Day Attacks and cannot handle the velocity of modern Big Data traffic.
+                            Traditional Intrusion Detection Systems (IDS) rely on <span class="text-red-400 font-mono bg-red-900/20 px-1 rounded">static signatures</span>. They are blind to Zero-Day Attacks and cannot handle the velocity of modern Big Data traffic.
                         </p>
                         <div class="mt-auto p-3 md:p-4 bg-red-950/30 rounded border-l-2 border-red-500">
                             <div class="text-[10px] text-red-400 font-mono mb-1">IMPACT</div>
-                            <div class="text-xs md:text-sm text-white">Network remains vulnerable to sophisticated,
-                                evolving threats.</div>
+                            <div class="text-xs md:text-sm text-white">Network remains vulnerable to sophisticated, evolving threats.</div>
                         </div>
                     </div>
 
                     <!-- Solution Card -->
-                    <div
-                        class="glass-panel p-5 md:p-10 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col h-full">
+                    <div class="glass-panel p-5 md:p-10 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col h-full">
                         <!-- Glow Effect -->
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/20 blur-[50px] rounded-full"></div>
-
+                        
                         <div class="flex items-center gap-3 mb-4 md:mb-6 relative z-10">
                             <i class="fas fa-shield-alt text-2xl md:text-3xl text-cyan-400"></i>
                             <h2 class="text-lg md:text-2xl font-bold text-cyan-400">THE SOLUTION</h2>
                         </div>
                         <p class="text-gray-300 text-sm md:text-xl leading-relaxed mb-6 relative z-10">
-                            A prototype IDS integrating <span class="text-cyan-400 font-mono font-bold">Machine Learning
-                                (XGBoost)</span> and <span class="text-purple-400 font-mono font-bold">Deep Learning
-                                (DNN)</span> with Big Data analytics to detect anomalies that rule-based systems miss.
+                            A prototype IDS integrating <span class="text-cyan-400 font-mono font-bold">Machine Learning (XGBoost)</span> and <span class="text-purple-400 font-mono font-bold">Deep Learning (DNN)</span> with Big Data analytics to detect anomalies that rule-based systems miss.
                         </p>
                         <div class="mt-auto p-3 md:p-4 bg-cyan-950/30 rounded border-l-2 border-cyan-500 relative z-10">
                             <div class="text-[10px] text-cyan-400 font-mono mb-1">RESULT</div>
@@ -499,72 +434,55 @@
         <section class="page-section" id="page-3">
             <div class="w-full max-w-7xl mx-auto">
                 <div class="text-center mb-8 md:mb-12 anim-element px-4">
-                    <h2 class="text-xl md:text-3xl font-bold tracking-widest text-white mb-2">BIG DATA STRATEGY (5 Vs)
-                    </h2>
+                    <h2 class="text-xl md:text-3xl font-bold tracking-widest text-white mb-2">BIG DATA STRATEGY (5 Vs)</h2>
                     <p class="text-gray-400 font-mono text-xs md:text-base">Managing the CIC-IDS2017 Dataset Scale</p>
                 </div>
 
                 <!-- Grid adapts from 1 column (mobile) to 5 columns (large screens) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 px-2">
                     <!-- Card 1 -->
-                    <div
-                        class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element">
-                        <div
-                            class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
+                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element">
+                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
                             <i class="fas fa-database text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
                         </div>
                         <h3 class="font-bold text-sm md:text-lg text-white mb-1">VOLUME</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">2.8M+ records handled
-                            via <span class="text-blue-400">Stratified Sampling</span>.</p>
+                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">2.8M+ records handled via <span class="text-blue-400">Stratified Sampling</span>.</p>
                     </div>
 
                     <!-- Card 2 -->
-                    <div
-                        class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-1">
-                        <div
-                            class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
+                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-1">
+                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
                             <i class="fas fa-bolt text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
                         </div>
                         <h3 class="font-bold text-sm md:text-lg text-white mb-1">VELOCITY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Gigabit processing using
-                            <span class="text-blue-400">Vectorized Ops</span>.</p>
+                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Gigabit processing using <span class="text-blue-400">Vectorized Ops</span>.</p>
                     </div>
 
                     <!-- Card 3 -->
-                    <div
-                        class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-2">
-                        <div
-                            class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i
-                                class="fas fa-project-diagram text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
+                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-2">
+                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
+                            <i class="fas fa-project-diagram text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
                         </div>
                         <h3 class="font-bold text-sm md:text-lg text-white mb-1">VARIETY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">80+ features, diverse
-                            protocols (<span class="text-blue-400">TCP, UDP</span>).</p>
+                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">80+ features, diverse protocols (<span class="text-blue-400">TCP, UDP</span>).</p>
                     </div>
 
                     <!-- Card 4 -->
-                    <div
-                        class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-3">
-                        <div
-                            class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
+                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-3">
+                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
                             <i class="fas fa-filter text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
                         </div>
                         <h3 class="font-bold text-sm md:text-lg text-white mb-1">VERACITY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Removing <span
-                                class="text-blue-400">Infinite & Nulls</span> for stability.</p>
+                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Removing <span class="text-blue-400">Infinite & Nulls</span> for stability.</p>
                     </div>
 
                     <!-- Card 5 -->
-                    <div
-                        class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-4">
-                        <div
-                            class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
+                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-4">
+                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
                             <i class="fas fa-chart-line text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
                         </div>
                         <h3 class="font-bold text-sm md:text-lg text-white mb-1">VALUE</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Raw logs to <span
-                                class="text-blue-400">Actionable Intel</span>.</p>
+                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Raw logs to <span class="text-blue-400">Actionable Intel</span>.</p>
                     </div>
                 </div>
             </div>
@@ -575,62 +493,49 @@
             <div class="w-full max-w-6xl mx-auto">
                 <div class="text-center mb-8 md:mb-12 anim-element">
                     <h2 class="text-xl md:text-4xl font-bold mb-2 neon-text-blue">METHODOLOGY</h2>
-                    <div class="text-[10px] md:text-xs font-mono text-gray-500 tracking-wider">DATA ENGINEERING PIPELINE
-                    </div>
+                    <div class="text-[10px] md:text-xs font-mono text-gray-500 tracking-wider">DATA ENGINEERING PIPELINE</div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 relative">
                     <!-- Connector line (Desktop only) -->
-                    <div
-                        class="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gray-700 to-transparent -z-10 hidden md:block transform -translate-y-1/2">
-                    </div>
+                    <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gray-700 to-transparent -z-10 hidden md:block transform -translate-y-1/2"></div>
 
                     <!-- Card 1 -->
-                    <div
-                        class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-1 border-t-2 border-blue-500 h-full">
+                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-1 border-t-2 border-blue-500 h-full">
                         <div class="text-blue-400 font-bold mb-3 text-lg md:text-2xl">01. PREPROCESSING</div>
                         <div class="space-y-3">
                             <div>
                                 <h4 class="text-white font-bold text-xs md:text-sm mb-1 uppercase">Cleaning</h4>
-                                <p class="text-[10px] md:text-xs text-gray-400">Handling mathematical instability (+∞,
-                                    -∞) and missing values.</p>
+                                <p class="text-[10px] md:text-xs text-gray-400">Handling mathematical instability (+∞, -∞) and missing values.</p>
                             </div>
                             <div>
                                 <h4 class="text-white font-bold text-xs md:text-sm mb-1 uppercase">Deduplication</h4>
-                                <p class="text-[10px] md:text-xs text-gray-400">Removing redundant records to prevent
-                                    Model Overfitting.</p>
+                                <p class="text-[10px] md:text-xs text-gray-400">Removing redundant records to prevent Model Overfitting.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 2 -->
-                    <div
-                        class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-2 border-t-2 border-purple-500 h-full">
+                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-2 border-t-2 border-purple-500 h-full">
                         <div class="text-purple-400 font-bold mb-3 text-lg md:text-2xl">02. SCALING</div>
                         <p class="text-xs md:text-sm text-gray-300 mb-4 leading-relaxed">
-                            Applying <span class="text-white font-bold">Robust Scaling</span> (Median & IQR) instead of
-                            Standard Scaling.
+                            Applying <span class="text-white font-bold">Robust Scaling</span> (Median & IQR) instead of Standard Scaling.
                         </p>
                         <div class="bg-purple-900/20 p-2 rounded text-[10px] text-gray-300 border border-purple-500/30">
-                            <i class="fas fa-info-circle mr-1"></i> Critical for handling "bursty" DDoS attacks
-                            outliers.
+                            <i class="fas fa-info-circle mr-1"></i> Critical for handling "bursty" DDoS attacks outliers.
                         </div>
                     </div>
 
                     <!-- Card 3 -->
-                    <div
-                        class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-3 border-t-2 border-green-500 h-full">
+                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-3 border-t-2 border-green-500 h-full">
                         <div class="text-green-400 font-bold mb-3 text-lg md:text-2xl">03. SELECTION</div>
-                        <div class="text-xs md:text-sm text-gray-300 mb-2">Technique: <span
-                                class="font-mono text-white">RFECV + XGBoost</span></div>
-                        <div
-                            class="flex items-center justify-between bg-gray-800 p-3 rounded mb-3 border border-gray-700">
+                        <div class="text-xs md:text-sm text-gray-300 mb-2">Technique: <span class="font-mono text-white">RFECV + XGBoost</span></div>
+                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded mb-3 border border-gray-700">
                             <span class="text-red-400 line-through text-xs md:text-sm">78 Features</span>
                             <i class="fas fa-arrow-right text-gray-500"></i>
                             <span class="text-green-400 font-bold text-sm md:text-lg">23 Features</span>
                         </div>
-                        <p class="text-[10px] md:text-xs text-gray-400">Reduced latency by 60% without losing accuracy.
-                        </p>
+                        <p class="text-[10px] md:text-xs text-gray-400">Reduced latency by 60% without losing accuracy.</p>
                     </div>
                 </div>
             </div>
@@ -647,54 +552,41 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
 
                     <!-- Layer 1 -->
-                    <div
-                        class="glass-panel p-5 md:p-6 tilt-card anim-element border border-gray-600 bg-gray-900/50 flex flex-col relative">
-                        <div
-                            class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-[10px] font-mono border border-gray-600 rounded-full text-gray-300">
-                            LAYER 01</div>
-
-                        <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">SIGNATURE ENGINE
-                        </h3>
+                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element border border-gray-600 bg-gray-900/50 flex flex-col relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-[10px] font-mono border border-gray-600 rounded-full text-gray-300">LAYER 01</div>
+                        
+                        <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">SIGNATURE ENGINE</h3>
                         <div class="text-center text-[10px] font-mono text-yellow-500 mb-4">(THE SHIELD)</div>
-
+                        
                         <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
                             <p>Filters known threats (Blacklist IP/Ports) instantly.</p>
-                            <p class="text-[10px] text-gray-500 border-t border-gray-700 pt-2">Goal: Offload heavy
-                                traffic from AI models.</p>
+                            <p class="text-[10px] text-gray-500 border-t border-gray-700 pt-2">Goal: Offload heavy traffic from AI models.</p>
                         </div>
                     </div>
 
                     <!-- Layer 2 (Highlighted) -->
-                    <div
-                        class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-1 border border-blue-500 bg-blue-900/20 flex flex-col relative transform md:-translate-y-4 shadow-[0_0_20px_rgba(0,100,255,0.15)] z-10">
-                        <div
-                            class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-blue-700 text-[10px] font-bold font-mono border border-blue-400 rounded-full text-white">
-                            LAYER 02</div>
+                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-1 border border-blue-500 bg-blue-900/20 flex flex-col relative transform md:-translate-y-4 shadow-[0_0_20px_rgba(0,100,255,0.15)] z-10">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-blue-700 text-[10px] font-bold font-mono border border-blue-400 rounded-full text-white">LAYER 02</div>
 
                         <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">XGBOOST</h3>
                         <div class="text-center text-[10px] font-mono text-blue-400 mb-4">(STRUCTURED AI)</div>
-
+                        
                         <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
                             <p>Gradient Boosting for ultra-fast classification of packet headers.</p>
-                            <p class="text-[10px] text-blue-300 border-t border-blue-900 pt-2">Goal: Catch DDoS & Port
-                                Scans.</p>
+                            <p class="text-[10px] text-blue-300 border-t border-blue-900 pt-2">Goal: Catch DDoS & Port Scans.</p>
                         </div>
                     </div>
 
                     <!-- Layer 3 -->
-                    <div
-                        class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-2 border border-purple-500 bg-purple-900/20 flex flex-col relative">
-                        <div
-                            class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-purple-800 text-[10px] font-mono border border-purple-600 rounded-full text-white">
-                            LAYER 03</div>
+                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-2 border border-purple-500 bg-purple-900/20 flex flex-col relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-purple-800 text-[10px] font-mono border border-purple-600 rounded-full text-white">LAYER 03</div>
 
                         <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">DEEP NEURAL NET</h3>
                         <div class="text-center text-[10px] font-mono text-purple-400 mb-4">(COMPLEX PATTERNS)</div>
-
+                        
                         <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
                             <p>Deep Learning (DNN) to find non-linear relationships.</p>
-                            <p class="text-[10px] text-purple-300 border-t border-purple-900 pt-2">Goal: Detect Botnets
-                                & Web Attacks.</p>
+                            <p class="text-[10px] text-purple-300 border-t border-purple-900 pt-2">Goal: Detect Botnets & Web Attacks.</p>
                         </div>
                     </div>
 
@@ -714,14 +606,11 @@
 
                     <!-- Stats Panel -->
                     <div class="glass-panel p-5 md:p-8 anim-element anim-delay-1">
-                        <h3
-                            class="font-mono text-blue-400 mb-4 border-b border-blue-900/50 pb-2 text-sm md:text-base tracking-widest">
-                            XGBOOST METRICS</h3>
-
+                        <h3 class="font-mono text-blue-400 mb-4 border-b border-blue-900/50 pb-2 text-sm md:text-base tracking-widest">XGBOOST METRICS</h3>
+                        
                         <div class="flex items-center justify-between mb-6">
                             <span class="text-base md:text-xl font-bold text-white">ACCURACY</span>
-                            <span
-                                class="text-4xl md:text-5xl font-bold text-green-400 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]">99.9%</span>
+                            <span class="text-4xl md:text-5xl font-bold text-green-400 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]">99.9%</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-3 text-center text-xs md:text-sm font-mono mb-4">
@@ -733,8 +622,7 @@
                                 <div class="text-gray-500 text-[10px]">ATTACKS</div>
                                 <div class="text-white font-bold text-lg">38,402</div>
                             </div>
-                            <div
-                                class="bg-red-900/10 p-2 md:p-3 rounded col-span-2 border border-red-500/30 flex justify-between items-center px-4">
+                            <div class="bg-red-900/10 p-2 md:p-3 rounded col-span-2 border border-red-500/30 flex justify-between items-center px-4">
                                 <div class="text-red-400 text-[10px] uppercase">Total Misclassified</div>
                                 <div class="text-white font-bold text-xl">2</div>
                             </div>
@@ -743,9 +631,7 @@
 
                     <!-- Comparison Panel -->
                     <div class="glass-panel p-5 md:p-8 anim-element anim-delay-2">
-                        <h3
-                            class="font-mono text-red-400 mb-4 border-b border-red-900/50 pb-2 text-sm md:text-base tracking-widest">
-                            TRADITIONAL vs AI</h3>
+                        <h3 class="font-mono text-red-400 mb-4 border-b border-red-900/50 pb-2 text-sm md:text-base tracking-widest">TRADITIONAL vs AI</h3>
 
                         <div class="space-y-6">
                             <!-- Traditional -->
@@ -772,10 +658,8 @@
                                     <span>OUR HYBRID SYSTEM</span>
                                     <span>NEAR PERFECT</span>
                                 </div>
-                                <div
-                                    class="w-full bg-gray-800 h-6 md:h-8 rounded overflow-hidden relative border border-green-500/50 shadow-[0_0_10px_rgba(0,255,0,0.2)]">
-                                    <div class="absolute top-0 left-0 h-full bg-green-600 flex items-center px-4 text-[10px] md:text-xs font-bold text-white bar-fill"
-                                        style="width: 0%" data-width="99.9%">ACCURACY: ~100%</div>
+                                <div class="w-full bg-gray-800 h-6 md:h-8 rounded overflow-hidden relative border border-green-500/50 shadow-[0_0_10px_rgba(0,255,0,0.2)]">
+                                    <div class="absolute top-0 left-0 h-full bg-green-600 flex items-center px-4 text-[10px] md:text-xs font-bold text-white bar-fill" style="width: 0%" data-width="99.9%">ACCURACY: ~100%</div>
                                 </div>
                             </div>
                         </div>
@@ -796,8 +680,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center">
 
                     <!-- Dashboard Mockup -->
-                    <div
-                        class="glass-panel p-2 rounded-xl shadow-[0_0_50px_rgba(0,243,255,0.05)] anim-element anim-delay-1 border border-gray-700 bg-[#0e1117]">
+                    <div class="glass-panel p-2 rounded-xl shadow-[0_0_50px_rgba(0,243,255,0.05)] anim-element anim-delay-1 border border-gray-700 bg-[#0e1117]">
                         <div class="rounded-lg overflow-hidden p-3 md:p-5 font-mono text-xs">
                             <!-- Mock Header -->
                             <div class="flex items-center gap-2 border-b border-gray-700 pb-2 mb-4">
@@ -841,21 +724,16 @@
                         <h3 class="text-lg md:text-2xl font-bold text-white mb-4">EMPOWERING ANALYSTS</h3>
                         <ul class="space-y-4 mb-8">
                             <li class="flex items-start gap-3">
-                                <div class="mt-1 bg-blue-900/50 p-1.5 rounded-full"><i
-                                        class="fas fa-chart-pie text-blue-400 text-xs"></i></div>
-                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Transforms cryptic logs
-                                    into clear visualization for faster decision making.</span>
+                                <div class="mt-1 bg-blue-900/50 p-1.5 rounded-full"><i class="fas fa-chart-pie text-blue-400 text-xs"></i></div>
+                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Transforms cryptic logs into clear visualization for faster decision making.</span>
                             </li>
                             <li class="flex items-start gap-3">
-                                <div class="mt-1 bg-red-900/50 p-1.5 rounded-full"><i
-                                        class="fas fa-bell text-red-400 text-xs"></i></div>
-                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Real-time alerts reduce
-                                    response time from minutes to milliseconds.</span>
+                                <div class="mt-1 bg-red-900/50 p-1.5 rounded-full"><i class="fas fa-bell text-red-400 text-xs"></i></div>
+                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Real-time alerts reduce response time from minutes to milliseconds.</span>
                             </li>
                         </ul>
 
-                        <a href="#"
-                            class="github-btn group relative px-6 py-3 font-bold text-xs md:text-sm tracking-wider uppercase rounded-sm overflow-hidden text-center w-full sm:w-auto self-start">
+                        <a href="#" class="github-btn group relative px-6 py-3 font-bold text-xs md:text-sm tracking-wider uppercase rounded-sm overflow-hidden text-center w-full sm:w-auto self-start">
                             <span class="relative z-10 flex items-center justify-center gap-2">
                                 <i class="fab fa-github text-lg"></i>
                                 View Project
@@ -870,21 +748,16 @@
     </main>
 
     <!-- NAVIGATION BAR FIXED BOTTOM -->
-    <div
-        class="fixed bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-3 bg-black/60 backdrop-blur-xl p-2 px-4 rounded-full border border-white/10 shadow-lg">
-        <button id="prev-btn"
-            class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center"
-            onclick="changePage(-1)">
+    <div class="fixed bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-2 bg-black/80 backdrop-blur-xl p-2 px-3 rounded-full border border-white/10 shadow-lg border-t border-gray-700">
+        <button id="prev-btn" class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center" onclick="changePage(-1)">
             <i class="fas fa-chevron-left"></i> <span class="hidden md:inline md:ml-2">PREV</span>
         </button>
 
-        <div class="flex gap-2" id="nav-dots">
+        <div class="flex gap-1.5 md:gap-2" id="nav-dots">
             <!-- Dots generated via JS -->
         </div>
 
-        <button id="next-btn"
-            class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center"
-            onclick="changePage(1)">
+        <button id="next-btn" class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center" onclick="changePage(1)">
             <span class="hidden md:inline md:mr-2">NEXT</span> <i class="fas fa-chevron-right"></i>
         </button>
     </div>
@@ -902,7 +775,7 @@
         // Create Navigation Dots
         for (let i = 1; i <= totalPages; i++) {
             const dot = document.createElement('div');
-            dot.className = `w-2 h-2 md:w-2.5 md:h-2.5 rounded-full border border-blue-500 cursor-pointer transition-all duration-300 ${i === 1 ? 'bg-blue-500' : 'bg-transparent'}`;
+            dot.className = `w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full border border-blue-500 cursor-pointer transition-all duration-300 ${i === 1 ? 'bg-blue-500' : 'bg-transparent'}`;
             dot.onclick = () => goToPage(i);
             navDotsContainer.appendChild(dot);
         }
@@ -915,7 +788,7 @@
                     section.classList.add('active-page');
                     // Reset scroll position when entering page
                     section.scrollTop = 0;
-
+                    
                     // Trigger Bar Animations
                     const bars = section.querySelectorAll('.bar-fill');
                     setTimeout(() => {
@@ -1052,7 +925,7 @@
 
         // Touch support for particles
         window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
+            if(e.touches.length > 0) {
                 mouse.x = e.touches[0].clientX;
                 mouse.y = e.touches[0].clientY;
             }
@@ -1104,5 +977,4 @@
         }
     </script>
 </body>
-
 </html>
