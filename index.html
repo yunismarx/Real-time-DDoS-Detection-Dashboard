@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid AI Threat Detection | University of Baghdad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Rajdhani:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-red: #ff0055;
+            --neon-purple: #bc13fe;
+            --dark-bg: #050a14;
+            --panel-bg: rgba(10, 20, 40, 0.85);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+            /* Prevent scrolling, handle via JS */
+            height: 100vh;
+            width: 100vw;
+            cursor: crosshair;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* --- ADVANCED BACKGROUND --- */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a1120 0%, #000000 100%);
+        }
+
+        /* --- BOOT SEQUENCE OVERLAY --- */
+        #boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-blue);
+            font-size: 14px;
+            transition: opacity 1s ease;
+        }
+
+        /* --- GLITCH EFFECT --- */
+        .glitch-wrapper {
+            position: relative;
+        }
+
+        .glitch {
+            position: relative;
+            color: white;
+            mix-blend-mode: lighten;
+        }
+
+        .glitch:before,
+        .glitch:after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            background: var(--dark-bg);
+            clip: rect(0, 0, 0, 0);
+        }
+
+        .glitch:before {
+            left: -2px;
+            text-shadow: 2px 0 var(--neon-red);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+
+        .glitch:after {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-blue);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% {
+                clip: rect(20px, 9999px, 15px, 0);
+            }
+
+            100% {
+                clip: rect(70px, 9999px, 90px, 0);
+            }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% {
+                clip: rect(80px, 9999px, 30px, 0);
+            }
+
+            100% {
+                clip: rect(40px, 9999px, 60px, 0);
+            }
+        }
+
+        /* --- 3D TILT CARDS --- */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            transition: transform 0.1s;
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 243, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+
+        /* --- NAVIGATION CONTROLS --- */
+        .nav-control {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .nav-control:hover:not(:disabled) {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .nav-control:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: gray;
+            color: gray;
+        }
+
+        /* --- PAGE TRANSITIONS --- */
+        .page-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(0.95) translateY(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-top: 60px;
+            /* Space for header */
+            overflow-y: auto;
+            /* Allow internal scrolling if content is too tall */
+        }
+
+        .page-section.active-page {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        /* Scrollbar styling for internal content */
+        .page-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .page-section::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        .page-section::-webkit-scrollbar-thumb {
+            background: var(--neon-blue);
+            border-radius: 3px;
+        }
+
+        /* Utils */
+        .neon-text-blue {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .github-btn {
+            background: linear-gradient(45deg, transparent 5%, var(--neon-blue) 5%);
+            color: black;
+            box-shadow: 6px 0px 0px #00a0a8;
+            transition: all 0.3s ease;
+        }
+
+        .github-btn:hover {
+            box-shadow: 6px 0px 0px var(--neon-purple);
+            background: linear-gradient(45deg, transparent 5%, var(--neon-purple) 5%);
+            color: white;
+        }
+
+        .bar-fill {
+            width: 0%;
+            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .tech-corners {
+            position: relative;
+        }
+
+        .tech-corners::before,
+        .tech-corners::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: var(--neon-blue);
+            border-style: solid;
+            transition: all 0.3s;
+        }
+
+        .tech-corners::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .tech-corners::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* Animation Trigger Classes */
+        .anim-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .active-page .anim-element {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .active-page .anim-delay-1 {
+            transition-delay: 100ms;
+        }
+
+        .active-page .anim-delay-2 {
+            transition-delay: 200ms;
+        }
+
+        .active-page .anim-delay-3 {
+            transition-delay: 300ms;
+        }
+
+        .active-page .anim-delay-4 {
+            transition-delay: 400ms;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-cyan-900 selection:text-white">
+
+    <!-- SYSTEM BOOT OVERLAY -->
+    <div id="boot-screen">
+        <div id="boot-text"></div>
+    </div>
+
+    <!-- CANVAS BACKGROUND -->
+    <canvas id="canvas-container"></canvas>
+
+    <!-- HEADER -->
+    <nav
+        class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 p-2 font-mono text-xs flex justify-between items-center px-6">
+        <div class="flex items-center gap-4">
+            <span class="text-green-500 animate-pulse">● SYS STATUS: ONLINE</span>
+            <span class="hidden md:inline text-gray-400">|</span>
+            <span class="hidden md:inline text-blue-400">LATENCY: 0.4ms</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="page-indicator" class="text-neon-blue font-bold">PAGE 01 / 07</span>
+            <div class="text-gray-500 hidden sm:block">SECURE_CONNECTION</div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main id="main-content" class="relative w-full h-full">
+
+        <!-- PAGE 1: HERO & PROJECT CARD -->
+        <section class="page-section active-page" id="page-1">
+            <div class="absolute top-24 left-10 opacity-70 hidden md:block anim-element">
+                <div class="text-xs font-mono text-gray-500 border-l-2 border-gray-700 pl-2">
+                    <div>INIT_PROTOCOL: V_2.0</div>
+                    <div>OBJECTIVE: VISUAL_IDENTITY</div>
+                    <div>STATUS: ACADEMIC_PROFESSIONALISM</div>
+                </div>
+            </div>
+
+            <div class="text-center max-w-5xl z-10 anim-element px-4">
+                <h3 class="text-xl md:text-2xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of Baghdad</h3>
+                <h4 class="text-lg md:text-xl text-gray-500 mb-8 font-mono">College of Science | Department of
+                    Artificial Intelligence</h4>
+
+                <div class="relative group inline-block mb-8">
+                    <div
+                        class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
+                    </div>
+                    <div
+                        class="relative bg-black ring-1 ring-gray-900/5 rounded-lg leading-none flex flex-col items-center justify-center p-8 md:p-12 tech-corners">
+                        <h1 class="text-3xl md:text-6xl font-bold neon-text-blue leading-tight glitch-wrapper mb-2">
+                            <span class="glitch" data-text="AI & BIG DATA">AI & BIG DATA</span>
+                        </h1>
+                        <h2 class="text-2xl md:text-4xl text-white tracking-widest block mb-4">INTRUSION DETECTION &
+                            ANOMALY MONITORING</h2>
+                        <div class="text-sm md:text-lg text-gray-400 font-mono">(A Hybrid Approach for Real-Time Threat
+                            Detection)</div>
+                    </div>
+                </div>
+
+                <div
+                    class="glass-panel p-6 max-w-3xl mx-auto mb-8 anim-element anim-delay-1 border-l-4 border-blue-500">
+                    <div class="text-xs text-blue-500 font-mono mb-2 text-left">THE VISION</div>
+                    <p class="text-lg text-gray-300 italic">"Transforming cybersecurity from a traditional reactive
+                        response to an intelligent, proactive defense system capable of processing millions of network
+                        flows in real-time."</p>
+                </div>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full">
+                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-2">
+                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-xl">Yunis Jasim</div>
+                    </div>
+                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-3">
+                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-xl">Zahraa Hussein</div>
+                    </div>
+                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-4">
+                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-xl">Suliman Mohammed </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: PROBLEM & SOLUTION -->
+        <section class="page-section" id="page-2">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-10 anim-element">
+                    <h2 class="text-3xl font-bold text-white mb-2">PROBLEM CONTEXT & PROPOSED SOLUTION</h2>
+                    <p class="text-gray-400 font-mono text-sm">OBJECTIVE: Highlight scale of security challenge & Big
+                        Data dimensions</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+                    <!-- Problem -->
+                    <div
+                        class="glass-panel p-8 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-6">
+                            <h2 class="text-3xl font-bold text-red-500"><i class="fas fa-exclamation-triangle mr-2"></i>
+                                THE PROBLEM</h2>
+                        </div>
+                        <p class="text-gray-300 text-lg leading-relaxed">
+                            Traditional Intrusion Detection Systems (IDS) rely on <span
+                                class="text-red-400 font-mono">static signatures</span>, rendering them ineffective
+                            against Zero-Day Attacks and sophisticated, evolving threats.
+                        </p>
+                        <div class="mt-6 p-4 bg-red-900/20 rounded border border-red-900/50">
+                            <div class="text-xs text-red-400 font-mono mb-1">CONSEQUENCE</div>
+                            <div class="text-white">Reactive response leaves networks vulnerable.</div>
+                        </div>
+                    </div>
+
+                    <!-- Solution -->
+                    <div
+                        class="glass-panel p-8 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col justify-center">
+                        <div class="absolute -right-10 -top-10 w-40 h-40 bg-cyan-500/20 blur-[50px] rounded-full"></div>
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <h2 class="text-3xl font-bold text-cyan-400"><i class="fas fa-shield-alt mr-2"></i> THE
+                                SOLUTION</h2>
+                        </div>
+                        <p class="text-gray-300 text-lg leading-relaxed relative z-10">
+                            A prototype IDS that integrates advanced <span class="text-cyan-400 font-mono">Machine
+                                Learning (XGBoost)</span> and <span class="text-purple-400 font-mono">Deep Learning
+                                (DNN)</span> algorithms with Big Data analytics to detect anomalies that rule-based
+                            systems miss.
+                        </p>
+                        <div class="mt-6 p-4 bg-cyan-900/20 rounded border border-cyan-500/30 relative z-10">
+                            <div class="text-xs text-cyan-400 font-mono mb-1">ADVANTAGE</div>
+                            <div class="text-white">Intelligent, Proactive, Real-time.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: 5 V's -->
+        <section class="page-section" id="page-3">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="flex flex-col items-center justify-center gap-4 mb-12 anim-element">
+                    <h2 class="text-center text-3xl font-bold tracking-widest text-white">BIG DATA STRATEGY (THE 5 Vs)
+                    </h2>
+                    <p class="text-gray-400 font-mono">Designed to handle core challenges within CIC-IDS2017 dataset</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div
+                        class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-database text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">VOLUME</h3>
+                        <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Managing over 2.8 million records
+                            using representative <span class="text-blue-400">Stratified Sampling</span>.</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-1">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-tachometer-alt text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">VELOCITY</h3>
+                        <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Processing network traffic at
+                            Gigabit speeds using optimized <span class="text-blue-400">Vectorized Operations</span>.</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-2">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-network-wired text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">VARIETY</h3>
+                        <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Handling 80+ features across
+                            diverse protocols (<span class="text-blue-400">TCP, UDP, ICMP</span>).</p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-3">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-check-double text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">VERACITY</h3>
+                        <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Cleaning raw logs by removing
+                            <span class="text-blue-400">Infinite & Missing values</span> for high-fidelity training.
+                        </p>
+                    </div>
+                    <div
+                        class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-4">
+                        <div
+                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-chart-line text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-white">VALUE</h3>
+                        <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Transforming raw logs into <span
+                                class="text-blue-400">actionable, visual security intelligence</span>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: METHODOLOGY & FEATURE INNOVATION -->
+        <section class="page-section" id="page-4">
+            <div class="max-w-6xl mx-auto px-4 w-full">
+                <div class="flex flex-col items-center mb-12 anim-element">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-2 neon-text-blue text-center">METHODOLOGY & DATA
+                        ENGINEERING</h2>
+                    <div class="text-xs font-mono text-gray-500">SCIENTIFIC RIGOR & TECHNICAL EFFICIENCY</div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+                    <!-- Connector line -->
+                    <div
+                        class="absolute top-1/2 left-0 w-full h-1 bg-gray-800 -z-10 hidden md:block transform -translate-y-1/2">
+                    </div>
+
+                    <!-- Card 1 -->
+                    <div
+                        class="glass-panel p-6 tilt-card bg-black/60 anim-element anim-delay-1 border-t-2 border-blue-500">
+                        <div class="text-blue-400 font-bold mb-2 text-xl">01. PREPROCESSING</div>
+                        <div class="mb-4">
+                            <h4 class="text-white font-bold text-sm mb-1">Data Cleaning</h4>
+                            <p class="text-xs text-gray-400">Replacing infinite values (+∞, -∞) & nulls to prevent
+                                mathematical instability.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-bold text-sm mb-1">Deduplication</h4>
+                            <p class="text-xs text-gray-400">Removing duplicates to prevent "Data Leakage" &
+                                memorization.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div
+                        class="glass-panel p-6 tilt-card bg-black/60 anim-element anim-delay-2 border-t-2 border-purple-500">
+                        <div class="text-purple-400 font-bold mb-2 text-xl">02. ROBUST SCALING</div>
+                        <p class="text-sm text-gray-300 mb-4">Applying statistical scaling (Median & IQR) to handle
+                            <span class="text-white font-bold">Outliers</span>.
+                        </p>
+                        <div class="bg-purple-900/20 p-2 rounded text-xs text-gray-400 border border-purple-500/30">
+                            Critical for handling "bursty" DDoS attacks and protecting the model from noise.
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div
+                        class="glass-panel p-6 tilt-card bg-black/60 anim-element anim-delay-3 border-t-2 border-green-500">
+                        <div class="text-green-400 font-bold mb-2 text-xl">03. FEATURE INNOVATION</div>
+                        <div class="text-sm text-gray-300 mb-2">Technique: <span class="font-mono text-white">RFECV +
+                                XGBoost</span></div>
+                        <div class="flex items-center justify-between bg-gray-800 p-2 rounded mb-3">
+                            <span class="text-red-400 line-through">78 Features</span>
+                            <i class="fas fa-arrow-right text-gray-500"></i>
+                            <span class="text-green-400 font-bold">23 Critical</span>
+                        </div>
+                        <p class="text-xs text-gray-400">Reduced latency & improved accuracy. Key Indicators: IAT,
+                            Packet Length Variance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 5: HYBRID SYSTEM ARCHITECTURE -->
+        <section class="page-section" id="page-5">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-12 anim-element">
+                    <h2 class="text-3xl font-bold mb-2 text-white">HYBRID SYSTEM ARCHITECTURE</h2>
+                    <p class="text-gray-400 font-mono">STAGED HIERARCHICAL DEFENSE PIPELINE</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+
+                    <!-- Layer 1 -->
+                    <div
+                        class="glass-panel p-6 tilt-card anim-element border border-gray-600 bg-gray-900/50 flex flex-col">
+                        <div
+                            class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-xl font-bold mb-4 mx-auto border-2 border-white">
+                            1</div>
+                        <h3 class="text-xl font-bold text-center mb-2">SIGNATURE RULE ENGINE</h3>
+                        <div class="text-center text-xs font-mono text-yellow-400 mb-6">(THE SHIELD)</div>
+                        <div class="flex-grow space-y-4">
+                            <div>
+                                <span class="text-gray-500 text-xs font-bold block">FUNCTION</span>
+                                <span class="text-gray-300 text-sm">Deterministic, high-speed filtering.</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 text-xs font-bold block">GOAL</span>
+                                <span class="text-gray-300 text-sm">Immediate blocking of known, high-volume threats
+                                    (like DDoS) to offload AI layers.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 2 -->
+                    <div
+                        class="glass-panel p-6 tilt-card anim-element anim-delay-1 border border-blue-500 bg-blue-900/20 flex flex-col transform scale-105 z-10 shadow-[0_0_30px_rgba(0,0,255,0.2)]">
+                        <div
+                            class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-xl font-bold mb-4 mx-auto border-2 border-white">
+                            2</div>
+                        <h3 class="text-xl font-bold text-center mb-2">ADVANCED ML (XGBOOST)</h3>
+                        <div class="text-center text-xs font-mono text-blue-400 mb-6">(STRUCTURED CLASSIFICATION)</div>
+                        <div class="flex-grow space-y-4">
+                            <div>
+                                <span class="text-blue-500/70 text-xs font-bold block">FUNCTION</span>
+                                <span class="text-gray-300 text-sm">Extreme Gradient Boosting.</span>
+                            </div>
+                            <div>
+                                <span class="text-blue-500/70 text-xs font-bold block">GOAL</span>
+                                <span class="text-gray-300 text-sm">Precise classification of complex, structured
+                                    network attacks with superior speed.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Layer 3 -->
+                    <div
+                        class="glass-panel p-6 tilt-card anim-element anim-delay-2 border border-purple-500 bg-purple-900/20 flex flex-col">
+                        <div
+                            class="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-xl font-bold mb-4 mx-auto border-2 border-white">
+                            3</div>
+                        <h3 class="text-xl font-bold text-center mb-2">DEEP NEURAL NETWORK</h3>
+                        <div class="text-center text-xs font-mono text-purple-400 mb-6">(COMPLEX PATTERNS)</div>
+                        <div class="flex-grow space-y-4">
+                            <div>
+                                <span class="text-purple-500/70 text-xs font-bold block">FUNCTION</span>
+                                <span class="text-gray-300 text-sm">Deep Learning with hidden layers.</span>
+                            </div>
+                            <div>
+                                <span class="text-purple-500/70 text-xs font-bold block">GOAL</span>
+                                <span class="text-gray-300 text-sm">Detecting non-linear, highly complex patterns that
+                                    bypass standard rules & simpler ML.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 6: PERFORMANCE VALIDATION -->
+        <section class="page-section" id="page-6">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-10 anim-element">
+                    <h2 class="text-3xl font-bold text-white mb-2">PERFORMANCE VALIDATION & RESULTS</h2>
+                    <p class="text-gray-400 font-mono">DATA-DRIVEN EVIDENCE</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+
+                    <!-- Stats Panel -->
+                    <div class="glass-panel p-6 anim-element anim-delay-1">
+                        <h3 class="font-mono text-blue-400 mb-4 border-b border-blue-900 pb-2">XGBOOST PERFORMANCE</h3>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="text-xl font-bold text-white">ACCURACY</span>
+                            <span class="text-4xl font-bold text-green-400">100%</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-center text-sm font-mono mb-6">
+                            <div class="bg-gray-800 p-2 rounded">
+                                <div class="text-gray-400 text-xs">BENIGN</div>
+                                <div class="text-white font-bold">28,521</div>
+                            </div>
+                            <div class="bg-gray-800 p-2 rounded">
+                                <div class="text-gray-400 text-xs">ATTACKS</div>
+                                <div class="text-white font-bold">38,402</div>
+                            </div>
+                            <div class="bg-gray-800 p-2 rounded col-span-2 border border-red-500/30">
+                                <div class="text-red-400 text-xs">MISCLASSIFICATIONS</div>
+                                <div class="text-white font-bold">ONLY 2</div>
+                            </div>
+                        </div>
+
+                        <h3 class="font-mono text-purple-400 mb-2 border-b border-purple-900 pb-2 pt-4">DNN PERFORMANCE
+                        </h3>
+                        <p class="text-sm text-gray-300">High generalization capability. Only <span
+                                class="text-purple-400 font-bold">4 errors</span> in classifying benign traffic, proving
+                            robustness.</p>
+                    </div>
+
+                    <!-- Comparison Panel -->
+                    <div class="glass-panel p-6 anim-element anim-delay-2">
+                        <h3 class="font-mono text-red-400 mb-6 border-b border-red-900 pb-2">COMPARISON WITH TRADITIONAL
+                            METHODS</h3>
+
+                        <div class="space-y-6">
+                            <!-- Traditional -->
+                            <div>
+                                <div class="flex justify-between text-xs font-mono mb-1 text-red-400">
+                                    <span>SIGNATURE-BASED RULES</span>
+                                    <span>INEFFECTIVE</span>
+                                </div>
+                                <div class="flex gap-2 mb-2">
+                                    <div class="bg-red-900/30 border border-red-500/30 p-2 flex-1 text-center">
+                                        <div class="text-2xl font-bold text-red-500">1,075</div>
+                                        <div class="text-[10px] text-red-300">FALSE POSITIVES</div>
+                                    </div>
+                                    <div class="bg-red-900/30 border border-red-500/30 p-2 flex-1 text-center">
+                                        <div class="text-2xl font-bold text-red-500">446</div>
+                                        <div class="text-[10px] text-red-300">MISSED ATTACKS</div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-400 italic">"Critical need for AI integration highlighted."
+                                </p>
+                            </div>
+
+                            <!-- Hybrid -->
+                            <div class="pt-4 border-t border-gray-800">
+                                <div class="flex justify-between text-xs font-mono mb-1 text-green-400">
+                                    <span>HYBRID AI SYSTEM</span>
+                                    <span>OPTIMAL</span>
+                                </div>
+                                <div
+                                    class="w-full bg-gray-800 h-8 rounded overflow-hidden relative border border-green-500/50 shadow-[0_0_10px_rgba(0,255,0,0.2)]">
+                                    <div class="absolute top-0 left-0 h-full bg-green-600 flex items-center px-4 text-xs font-bold text-white bar-fill"
+                                        data-width="99.9%">ACCURACY: ~100%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 7: DASHBOARD & GITHUB -->
+        <section class="page-section" id="page-7">
+            <div class="max-w-7xl mx-auto px-4 w-full">
+                <div class="text-center mb-8 anim-element">
+                    <h2 class="text-3xl font-bold text-white mb-2">VISUALIZATION & OPERATIONAL DASHBOARD</h2>
+                    <p class="text-gray-400 font-mono">FROM CODE TO PRODUCT</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+
+                    <!-- Dashboard Visual -->
+                    <div
+                        class="glass-panel p-1 rounded-xl shadow-[0_0_50px_rgba(0,243,255,0.1)] anim-element anim-delay-1">
+                        <div class="bg-[#0e1117] rounded-lg overflow-hidden p-6 font-mono text-xs">
+                            <div class="flex items-center gap-2 border-b border-gray-700 pb-2 mb-4">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="ml-auto text-gray-500">Streamlit Dashboard</span>
+                            </div>
+
+                            <h3 class="text-lg text-white font-bold mb-4">Security Overview</h3>
+
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-gray-800/50 p-3 rounded border border-gray-700">
+                                    <div class="text-gray-500 text-[10px]">TOTAL FLOWS</div>
+                                    <div class="text-blue-400 text-xl font-bold">2,800,000+</div>
+                                </div>
+                                <div class="bg-gray-800/50 p-3 rounded border border-red-900/50">
+                                    <div class="text-gray-500 text-[10px]">THREAT LEVEL</div>
+                                    <div class="text-red-500 text-xl font-bold animate-pulse">ELEVATED</div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="bg-gray-800/30 p-2 rounded border-l-2 border-red-500">
+                                    <div class="text-red-400 font-bold">> High-Prob Attack Detected</div>
+                                    <div class="text-gray-500 text-[10px]">Source: 192.168.1.105 | Type: DDoS</div>
+                                </div>
+                                <div class="bg-gray-800/30 p-2 rounded border-l-2 border-yellow-500">
+                                    <div class="text-yellow-400 font-bold">> Anomaly Flagged</div>
+                                    <div class="text-gray-500 text-[10px]">Unusual Packet Size Variance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Value Text -->
+                    <div class="anim-element anim-delay-2">
+                        <h3 class="text-xl font-bold text-white mb-4">VALUE FOR SECURITY ANALYSTS</h3>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-chart-pie text-blue-400 mt-1"></i>
+                                <span class="text-gray-300 text-sm">Transforms complex, cryptic logs into clear,
+                                    real-time visual charts.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-bell text-red-400 mt-1"></i>
+                                <span class="text-gray-300 text-sm">Provides immediate alerts on high-probability
+                                    attacks.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-brain text-purple-400 mt-1"></i>
+                                <span class="text-gray-300 text-sm">Empowers administrators to make data-driven
+                                    decisions rather than sifting through raw text logs.</span>
+                            </li>
+                        </ul>
+
+                        <div class="border-t border-gray-800 pt-8">
+                            <a href="#"
+                                class="github-btn inline-flex items-center gap-3 px-6 py-3 text-sm font-bold tracking-wider uppercase rounded-sm group w-full justify-center">
+                                <i class="fab fa-github text-xl group-hover:rotate-12 transition"></i>
+                                <span>ACCESS PROJECT REPOSITORY</span>
+                                <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                            </a>
+                            <div class="text-center mt-2 text-[10px] text-gray-600 font-mono">GH-2024-UOB-AI // BRANCH:
+                                MAIN</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NAVIGATION BAR FIXED BOTTOM -->
+    <div class="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4">
+        <button id="prev-btn" class="nav-control" onclick="changePage(-1)">
+            <i class="fas fa-chevron-left"></i> PREV
+        </button>
+
+        <div class="flex gap-2" id="nav-dots">
+            <!-- Dots will be generated by JS -->
+        </div>
+
+        <button id="next-btn" class="nav-control" onclick="changePage(1)">
+            NEXT <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- PAGE NAVIGATION LOGIC ---
+        let currentPage = 1;
+        const totalPages = 7;
+        const pageIndicator = document.getElementById('page-indicator');
+        const navDotsContainer = document.getElementById('nav-dots');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Create Navigation Dots
+        for (let i = 1; i <= totalPages; i++) {
+            const dot = document.createElement('div');
+            dot.className = `w-2 h-2 rounded-full border border-blue-500 cursor-pointer transition-all duration-300 ${i === 1 ? 'bg-blue-500' : 'bg-transparent'}`;
+            dot.onclick = () => goToPage(i);
+            navDotsContainer.appendChild(dot);
+        }
+        const dots = navDotsContainer.children;
+
+        function updateUI() {
+            // Update Page classes
+            document.querySelectorAll('.page-section').forEach((section, index) => {
+                if (index + 1 === currentPage) {
+                    section.classList.add('active-page');
+                    // Trigger Bar Animations specifically for current page
+                    const bars = section.querySelectorAll('.bar-fill');
+                    setTimeout(() => {
+                        bars.forEach(bar => bar.style.width = bar.getAttribute('data-width'));
+                    }, 100);
+                } else {
+                    section.classList.remove('active-page');
+                    // Reset bars
+                    const bars = section.querySelectorAll('.bar-fill');
+                    bars.forEach(bar => bar.style.width = '0%');
+                }
+            });
+
+            // Update Indicator Text
+            pageIndicator.innerText = `PAGE 0${currentPage} / 0${totalPages}`;
+
+            // Update Buttons
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // Update Dots
+            Array.from(dots).forEach((dot, index) => {
+                if (index + 1 === currentPage) {
+                    dot.classList.remove('bg-transparent');
+                    dot.classList.add('bg-blue-500', 'shadow-[0_0_8px_#00f3ff]');
+                } else {
+                    dot.classList.add('bg-transparent');
+                    dot.classList.remove('bg-blue-500', 'shadow-[0_0_8px_#00f3ff]');
+                }
+            });
+        }
+
+        function changePage(direction) {
+            if (direction === 1 && currentPage < totalPages) currentPage++;
+            else if (direction === -1 && currentPage > 1) currentPage--;
+            updateUI();
+        }
+
+        function goToPage(pageNum) {
+            currentPage = pageNum;
+            updateUI();
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentPage < totalPages) changePage(1);
+            }
+            if (e.key === 'ArrowLeft') {
+                if (currentPage > 1) changePage(-1);
+            }
+        });
+
+        // Initialize UI
+        updateUI();
+
+
+        // --- SYSTEM BOOT SEQUENCE (Existing) ---
+        const bootTextContainer = document.getElementById('boot-text');
+        const bootScreen = document.getElementById('boot-screen');
+        const lines = [
+            "> INITIALIZING KERNEL...",
+            "> LOADING MODULES: XGBOOST, TENSORFLOW...",
+            "> ESTABLISHING SECURE CONNECTION...",
+            "> BYPASSING FIREWALLS...",
+            "> SYSTEM READY."
+        ];
+
+        let lineIndex = 0;
+
+        function typeBootLines() {
+            if (lineIndex < lines.length) {
+                const div = document.createElement('div');
+                div.textContent = lines[lineIndex];
+                div.style.marginBottom = "5px";
+                if (lineIndex === lines.length - 1) div.style.color = "#00f3ff";
+                bootTextContainer.appendChild(div);
+                lineIndex++;
+                setTimeout(typeBootLines, 200);
+            } else {
+                setTimeout(() => {
+                    bootScreen.style.opacity = '0';
+                    setTimeout(() => { bootScreen.style.display = 'none'; }, 1000);
+                }, 500);
+            }
+        }
+
+        window.addEventListener('load', typeBootLines);
+
+        // --- INTERACTIVE NEURAL BACKGROUND (Existing) ---
+        const canvas = document.getElementById('canvas-container');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 243, 255, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+        let mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (mouse.x) {
+                    const dx = p.x - mouse.x;
+                    const dy = p.y - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 200) {
+                        ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 200})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // --- 3D TILT EFFECT (Existing) ---
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -5;
+                const rotateY = ((x - centerX) / centerX) * 5;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+            });
+        });
+
+    </script>
+</body>
+
+</html>
