@@ -4,381 +4,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hybrid AI Threat Detection | University of Baghdad</title>
+    <title>Hybrid Intrusion Detection System | Technical Dossier</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Rajdhani:wght@300;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"IBM Plex Sans"', 'sans-serif'],
+                        mono: ['"IBM Plex Mono"', 'monospace'],
+                    },
+                    colors: {
+                        'tech-bg': '#0f172a',
+                        'tech-card': '#1e293b',
+                        'tech-accent': '#3b82f6',
+                        'tech-alert': '#ef4444',
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    screens: {
+                        'xs': '375px', // Support for smaller phones
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         :root {
-            --neon-blue: #00f3ff;
-            --neon-red: #ff0055;
-            --neon-purple: #bc13fe;
-            --dark-bg: #050a14;
-            --panel-bg: rgba(10, 20, 40, 0.75);
+            --nav-height: 70px;
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: #e0e0e0;
-            font-family: 'Rajdhani', sans-serif;
-            overflow: hidden; /* Main body hidden, inner sections scroll */
+            background-color: #0f172a;
+            color: #1e293b;
+            overflow: hidden;
             height: 100vh;
-            width: 100vw;
-            cursor: default;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .font-mono {
-            font-family: 'JetBrains Mono', monospace;
+        /* --- Loading Screen Styles --- */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: #020617;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
         }
 
-        /* --- ADVANCED BACKGROUND --- */
-        #canvas-container {
+        .loader-text-glow {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Sequence Animations for Splash Screen */
+        .seq-1 {
+            animation: sequence1 5s forwards;
+        }
+
+        .seq-2 {
+            animation: sequence2 5s forwards;
+            opacity: 0;
+            /* Start hidden */
+        }
+
+        @keyframes sequence1 {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            10% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            45% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes sequence2 {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            55% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            90% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* --- Page Transitions --- */
+        .page-section {
+            display: none;
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: calc(var(--nav-height) + 40px);
+            scroll-behavior: smooth;
+        }
+
+        .page-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .page-section::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .page-section::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        .page-section::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* --- Components --- */
+        .tech-border {
+            position: relative;
+            border: 1px solid #334155;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tech-border:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .tech-card-title {
+            color: #94a3b8;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        #matrixCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at center, #0a1120 0%, #000000 100%);
+            opacity: 0.12;
+            pointer-events: none;
         }
 
-        /* --- BOOT SEQUENCE OVERLAY --- */
-        #boot-screen {
+        .cyber-nav {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 2rem;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--neon-blue);
-            font-size: 14px;
-            transition: opacity 1s ease;
-        }
-
-        /* --- GLITCH EFFECT --- */
-        .glitch-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glitch {
-            position: relative;
-            color: white;
-            mix-blend-mode: lighten;
-        }
-
-        .glitch:before,
-        .glitch:after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            width: 100%;
-            background: var(--dark-bg);
-            clip: rect(0, 0, 0, 0);
-        }
-
-        .glitch:before {
-            left: -2px;
-            text-shadow: 2px 0 var(--neon-red);
-            animation: glitch-anim-1 2s infinite linear alternate-reverse;
-        }
-
-        .glitch:after {
-            left: 2px;
-            text-shadow: -2px 0 var(--neon-blue);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(20px, 9999px, 15px, 0); }
-            100% { clip: rect(70px, 9999px, 90px, 0); }
-        }
-
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(80px, 9999px, 30px, 0); }
-            100% { clip: rect(40px, 9999px, 60px, 0); }
-        }
-
-        /* --- GLASS & CARDS --- */
-        .glass-panel {
-            background: var(--panel-bg);
+            height: var(--nav-height);
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid #334155;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 243, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            z-index: 50;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .glass-panel:hover {
-            border-color: rgba(0, 243, 255, 0.4);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
-        }
-
-        .tilt-card {
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
-            transition: transform 0.1s;
-        }
-
-        /* Only apply tilt hover on non-touch devices */
-        @media (hover: hover) {
-            .tilt-card:hover {
-                /* Transform handled by JS */
-            }
-        }
-
-        /* --- NAVIGATION CONTROLS --- */
-        .nav-control {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            padding: 8px 16px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: bold;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
-            backdrop-filter: blur(4px);
-        }
-
-        .nav-control:hover:not(:disabled) {
-            background: var(--neon-blue);
-            color: black;
-            box-shadow: 0 0 15px var(--neon-blue);
-        }
-
-        .nav-control:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            border-color: gray;
-            color: gray;
-        }
-
-        /* --- PAGE TRANSITIONS & LAYOUT --- */
-        .page-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(0.95) translateY(20px);
-            
-            /* Flex layout for centering content */
             display: flex;
-            flex-direction: column;
             align-items: center;
-            
-            /* UPDATED: Increased bottom padding significantly for mobile */
-            padding-top: 80px; 
-            padding-bottom: 150px; /* Increased from 90px to 150px to clear the nav bar */
-            padding-left: 1rem;
-            padding-right: 1rem;
-
-            /* Internal Scroll handling */
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-        }
-
-        .page-section.active-page {
-            opacity: 1;
-            pointer-events: all;
-            transform: scale(1) translateY(0);
-            z-index: 10;
-        }
-
-        /* Hide scrollbar but keep functionality */
-        .page-section::-webkit-scrollbar {
-            width: 4px;
-        }
-        .page-section::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .page-section::-webkit-scrollbar-thumb {
-            background: rgba(0, 243, 255, 0.3);
+            gap: 8px;
             border-radius: 4px;
         }
 
-        /* --- UTILS --- */
-        .neon-text-blue {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        @media (min-width: 768px) {
+            .nav-btn {
+                padding: 10px 24px;
+                font-size: 1rem;
+            }
         }
 
-        .github-btn {
-            background: linear-gradient(45deg, transparent 5%, rgba(0, 243, 255, 0.1) 5%);
-            color: var(--neon-blue);
-            border: 1px solid var(--neon-blue);
-            transition: all 0.3s ease;
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
         }
 
-        .github-btn:hover {
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
-            background: var(--neon-purple);
-            border-color: var(--neon-purple);
-            color: white;
+        .nav-btn:disabled {
+            border-color: #334155;
+            color: #475569;
+            cursor: not-allowed;
+            background: transparent;
+            box-shadow: none;
+            opacity: 0.5;
         }
 
-        .bar-fill {
-            width: 0%;
-            transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+        .progress-container {
+            flex-grow: 1;
+            margin: 0 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 400px;
         }
 
-        /* Decorative Corners */
-        .tech-corners {
+        @media (min-width: 768px) {
+            .progress-container {
+                margin: 0 40px;
+            }
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 2px;
+            background: #1e293b;
             position: relative;
         }
-        .tech-corners::before,
-        .tech-corners::after {
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px #3b82f6;
+            position: relative;
+        }
+
+        .progress-bar-fill::after {
             content: '';
             position: absolute;
-            width: 15px;
-            height: 15px;
-            border-color: var(--neon-blue);
-            border-style: solid;
-            transition: all 0.3s;
-        }
-        .tech-corners::before {
-            top: 0; left: 0; border-width: 2px 0 0 2px;
-        }
-        .tech-corners::after {
-            bottom: 0; right: 0; border-width: 0 2px 2px 0;
+            right: 0;
+            top: -2px;
+            width: 6px;
+            height: 6px;
+            background: #60a5fa;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #60a5fa;
         }
 
-        /* --- ANIMATIONS --- */
-        .anim-element {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.6s ease-out;
+        .page-indicator {
+            text-align: center;
+            color: #64748b;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            margin-top: 8px;
+            letter-spacing: 1px;
         }
-        .active-page .anim-element {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .active-page .anim-delay-1 { transition-delay: 100ms; }
-        .active-page .anim-delay-2 { transition-delay: 200ms; }
-        .active-page .anim-delay-3 { transition-delay: 300ms; }
-        .active-page .anim-delay-4 { transition-delay: 400ms; }
 
-        /* --- RESPONSIVE ADJUSTMENTS --- */
+        .dashboard-screen {
+            background: #0b1121;
+            color: #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid #334155;
+        }
+
+        .neon-btn {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 12px 24px;
+            color: #3b82f6;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-decoration: none;
+            font-family: 'IBM Plex Mono', monospace;
+            border: 2px solid #3b82f6;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: 0.2s;
+            background: transparent;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
         @media (min-width: 768px) {
-            .page-section {
-                justify-content: center; /* Center vertically on desktop */
-                padding-top: 80px;
-                padding-bottom: 80px; /* Standard padding for desktop */
+            .neon-btn {
+                padding: 15px 40px;
+                font-size: 1.1rem;
             }
+        }
+
+        .neon-btn:hover {
+            color: #fff;
+            background: #3b82f6;
+            box-shadow: 0 0 10px #3b82f6, 0 0 40px #3b82f6;
+        }
+
+        .v-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
         }
     </style>
 </head>
 
-<body class="antialiased selection:bg-cyan-900 selection:text-white">
+<body class="antialiased selection:bg-blue-500 selection:text-white">
 
-    <!-- SYSTEM BOOT OVERLAY -->
-    <div id="boot-screen">
-        <div id="boot-text"></div>
-    </div>
+    <!-- SPLASH SCREEN (LOADING) -->
+    <div id="splash-screen">
 
-    <!-- CANVAS BACKGROUND -->
-    <canvas id="canvas-container"></canvas>
-
-    <!-- HEADER -->
-    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10 p-3 md:p-4 font-mono">
-        <div class="max-w-7xl mx-auto flex justify-between items-center px-2">
-            <!-- Left Side -->
-            <div class="flex items-center gap-3">
-                <span class="text-green-500 animate-pulse flex items-center gap-2 text-xs md:text-sm">
-                    <span class="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full inline-block"></span>
-                    SYS: ONLINE
-                </span>
-                <span class="text-gray-600">|</span>
-                <span class="text-blue-400 text-xs hidden sm:inline">PING: 0.4ms</span>
-            </div>
-            
-            <!-- Right Side -->
-            <div class="flex items-center gap-4 text-xs md:text-sm">
-                <span id="page-indicator" class="text-neon-blue font-bold tracking-widest">PG 01/07</span>
-                <div class="text-gray-500 hidden md:block text-[10px] border border-gray-700 px-2 py-0.5 rounded">SECURE</div>
+        <!-- PHASE 1: University & College Name -->
+        <div class="absolute inset-0 flex flex-col justify-center items-center px-4 seq-1 pointer-events-none">
+            <h1
+                class="text-4xl md:text-6xl font-bold text-white tracking-widest uppercase loader-text-glow mb-8 text-center">
+                University of Baghdad
+            </h1>
+            <div class="relative inline-block text-center">
+                <h2
+                    class="text-2xl md:text-4xl font-mono font-bold text-blue-500 border-y-4 border-blue-600 py-4 px-6 bg-slate-900/50">
+                    College of Artificial intelligence
+                </h2>
+                <!-- Decorative corners -->
+                <div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-white"></div>
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-white"></div>
             </div>
         </div>
-    </nav>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main id="main-content" class="relative w-full h-full">
+        <!-- PHASE 2: Welcome Message -->
+        <div class="absolute inset-0 flex flex-col justify-center items-center px-4 seq-2 pointer-events-none">
+            <p class="text-slate-300 font-mono text-xl md:text-2xl tracking-widest uppercase mb-4">Welcome to the</p>
+            <h2
+                class="text-3xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 text-center uppercase tracking-wider loader-text-glow">
+                Big Data Department
+            </h2>
+        </div>
 
-        <!-- PAGE 1: HERO -->
-        <section class="page-section active-page" id="page-1">
-            
-            <!-- Floating Label (Desktop Only) -->
-            <div class="absolute top-24 left-10 opacity-60 hidden lg:block anim-element">
-                <div class="text-[10px] font-mono text-gray-500 border-l border-gray-700 pl-3 leading-loose">
-                    <div>INIT_PROTOCOL: V_2.0</div>
-                    <div>OBJ: VISUAL_IDENTITY</div>
-                    <div>LOC: BAGHDAD_U</div>
-                </div>
+        <!-- Progress Bar at the very bottom -->
+        <div class="absolute bottom-0 left-0 w-full h-2 bg-slate-900">
+            <div id="splash-progress"
+                class="h-full bg-gradient-to-r from-blue-600 to-cyan-400 w-0 transition-all duration-[5000ms] ease-linear shadow-[0_0_15px_rgba(59,130,246,0.8)]">
             </div>
+        </div>
 
-            <div class="text-center w-full max-w-5xl px-2 md:px-6 z-10 anim-element flex flex-col items-center">
-                <!-- University Title -->
-                <h3 class="text-xs md:text-lg lg:text-xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of Baghdad</h3>
-                <h4 class="text-[10px] md:text-base text-gray-500 mb-6 md:mb-10 font-mono">College of Science | Dept. of Artificial Intelligence</h4>
+        <!-- Background decorative grid -->
+        <div class="absolute inset-0 z-0 opacity-10"
+            style="background-image: radial-gradient(#3b82f6 1px, transparent 1px); background-size: 40px 40px;"></div>
+    </div>
 
-                <!-- Main Hero Box -->
-                <div class="relative group w-full max-w-xs sm:max-w-md md:max-w-3xl mb-8 md:mb-12">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-60 transition duration-1000"></div>
-                    <div class="relative bg-black/90 ring-1 ring-gray-800 rounded-lg p-6 md:p-12 tech-corners flex flex-col items-center">
-                        <h1 class="text-3xl sm:text-5xl md:text-7xl font-bold neon-text-blue leading-tight glitch-wrapper mb-3 md:mb-4">
-                            <span class="glitch" data-text="AI & BIG DATA">AI & BIG DATA</span>
-                        </h1>
-                        <h2 class="text-sm sm:text-lg md:text-2xl lg:text-3xl text-white tracking-wider font-light mb-4">
-                            INTRUSION DETECTION SYSTEM
-                        </h2>
-                        <div class="text-[10px] sm:text-xs md:text-base text-gray-400 font-mono bg-gray-900/50 px-3 py-1 rounded border border-gray-800">
-                            Hybrid Approach for Real-Time Threat Analysis
-                        </div>
-                    </div>
+    <!-- Matrix Background -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- CONTENT CONTAINER -->
+    <main id="main-content" class="w-full h-full relative">
+
+        <!-- PAGE 1: EXECUTIVE INTERFACE -->
+        <section id="page-1" class="page-section active px-4 pt-6 md:pt-10">
+            <div class="max-w-5xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <!-- UPDATED HEADER -->
+                <div
+                    class="w-full border-t border-b border-blue-900/30 py-3 mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-center text-[10px] md:text-xs font-mono text-slate-500 uppercase tracking-widest gap-2">
+                    <span><i class="fas fa-university mr-2 text-blue-500"></i>University of Baghdad</span>
+                    <span>College of Artificial intelligence</span>
                 </div>
 
-                <!-- Quote Box -->
-                <div class="glass-panel p-4 md:p-6 w-full max-w-2xl mx-auto mb-8 anim-element anim-delay-1 border-l-4 border-blue-500 text-left">
-                    <div class="text-[10px] text-blue-500 font-mono mb-2">MISSION STATEMENT</div>
-                    <p class="text-sm md:text-lg text-gray-300 italic leading-relaxed">
-                        "Transforming cybersecurity from a reactive response to an intelligent, proactive defense system capable of processing millions of network flows in real-time."
-                    </p>
-                </div>
-
-                <!-- Team Grid -->
-                <div class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 text-left">
-                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-2 flex items-center gap-3 sm:block">
-                        <div class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center sm:mb-2 text-xs border border-blue-500/30"><i class="fas fa-user"></i></div>
-                        <div>
-                            <div class="text-[10px] text-blue-500 font-mono">Researcher</div>
-                            <div class="font-bold text-sm md:text-lg">Yunis Jasim</div>
-                        </div>
+                <div
+                    class="w-full bg-slate-900/60 backdrop-blur-md border border-slate-700 p-6 md:p-12 rounded-lg shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 md:opacity-20 pointer-events-none">
+                        <i class="fas fa-fingerprint text-7xl md:text-9xl text-blue-500"></i>
                     </div>
-                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-3 flex items-center gap-3 sm:block">
-                        <div class="w-8 h-8 rounded-full bg-purple-900/50 flex items-center justify-center sm:mb-2 text-xs border border-purple-500/30"><i class="fas fa-user"></i></div>
-                        <div>
-                            <div class="text-[10px] text-purple-500 font-mono">Researcher</div>
-                            <div class="font-bold text-sm md:text-lg">Zahraa Hussein</div>
-                        </div>
-                    </div>
-                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-4 flex items-center gap-3 sm:block">
-                        <div class="w-8 h-8 rounded-full bg-green-900/50 flex items-center justify-center sm:mb-2 text-xs border border-green-500/30"><i class="fas fa-user"></i></div>
-                        <div>
-                            <div class="text-[10px] text-green-500 font-mono">Researcher</div>
-                            <div class="font-bold text-sm md:text-lg">Suliman Mohammed</div>
+                    <div class="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-blue-500 to-purple-600"></div>
+                    <div class="relative z-10">
+                        <div
+                            class="inline-block px-3 py-1 bg-blue-900/30 text-blue-400 text-[10px] md:text-xs font-mono rounded mb-4 md:mb-6 border border-blue-500/20">
+                            PROJECT IDENTITY CARD</div>
+                        <h1 class="text-2xl md:text-5xl font-bold text-white mb-2 leading-tight">AI & Big Data
+                            Intrusion<br class="hidden md:block"> Detection <span
+                                class="text-slate-400 block md:inline text-lg md:text-3xl mt-1 md:mt-0">& Anomaly
+                                Monitoring</span></h1>
+                        <p
+                            class="text-blue-400 text-sm md:text-xl font-light italic mb-8 border-l-2 border-blue-500 pl-4 py-1 mt-4">
+                            (A Hybrid Approach for Real-Time Threat Detection)</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mt-6 md:mt-10">
+                            <div>
+                                <h3 class="tech-card-title text-slate-400"><i class="fas fa-users mr-2"></i>Research &
+                                    Development Team</h3>
+                                <ul class="space-y-2 md:space-y-3">
+                                    <li
+                                        class="flex items-center text-slate-200 font-semibold bg-slate-800/50 p-2 rounded border border-slate-700/50 text-sm md:text-base">
+                                        <div
+                                            class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-xs mr-3 shrink-0">
+                                            YJ</div>Yunis Jasim
+                                    </li>
+                                    <li
+                                        class="flex items-center text-slate-200 font-semibold bg-slate-800/50 p-2 rounded border border-slate-700/50 text-sm md:text-base">
+                                        <div
+                                            class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-xs mr-3 shrink-0">
+                                            ZH</div>Zahraa Hussein
+                                    </li>
+                                    <li
+                                        class="flex items-center text-slate-200 font-semibold bg-slate-800/50 p-2 rounded border border-slate-700/50 text-sm md:text-base">
+                                        <div
+                                            class="w-8 h-8 rounded bg-blue-600 flex items-center justify-center text-xs mr-3 shrink-0">
+                                            SM</div>Suliman Mohammed
+                                    </li>
+                                </ul>
+                                <div class="mt-4 text-[10px] md:text-xs text-slate-500 font-mono">Department of
+                                    Artificial Intelligence</div>
+                            </div>
+                            <div>
+                                <h3 class="tech-card-title text-slate-400"><i class="fas fa-eye mr-2"></i>The Vision
+                                </h3>
+                                <div
+                                    class="bg-gradient-to-br from-slate-800 to-slate-900 p-4 md:p-6 rounded border border-slate-700 text-slate-300 leading-relaxed shadow-inner text-sm md:text-base">
+                                    "Transforming cybersecurity from a traditional reactive response to an intelligent,
+                                    <span class="text-blue-400 font-bold">proactive defense system</span> capable of
+                                    processing millions of network flows in real-time."
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -386,595 +488,670 @@
         </section>
 
         <!-- PAGE 2: PROBLEM & SOLUTION -->
-        <section class="page-section" id="page-2">
-            <div class="w-full max-w-6xl mx-auto">
-                <div class="text-center mb-6 md:mb-12 anim-element">
-                    <h2 class="text-xl md:text-4xl font-bold text-white mb-2">CONTEXT & SOLUTION</h2>
-                    <p class="text-gray-500 font-mono text-[10px] md:text-sm">STATUS: CRITICAL VULNERABILITY DETECTED</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
-                    <!-- Problem Card -->
-                    <div class="glass-panel p-5 md:p-10 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col h-full">
-                        <div class="flex items-center gap-3 mb-4 md:mb-6">
-                            <i class="fas fa-exclamation-triangle text-2xl md:text-3xl text-red-500"></i>
-                            <h2 class="text-lg md:text-2xl font-bold text-red-500">THE PROBLEM</h2>
-                        </div>
-                        <p class="text-gray-300 text-sm md:text-xl leading-relaxed mb-6">
-                            Traditional Intrusion Detection Systems (IDS) rely on <span class="text-red-400 font-mono bg-red-900/20 px-1 rounded">static signatures</span>. They are blind to Zero-Day Attacks and cannot handle the velocity of modern Big Data traffic.
-                        </p>
-                        <div class="mt-auto p-3 md:p-4 bg-red-950/30 rounded border-l-2 border-red-500">
-                            <div class="text-[10px] text-red-400 font-mono mb-1">IMPACT</div>
-                            <div class="text-xs md:text-sm text-white">Network remains vulnerable to sophisticated, evolving threats.</div>
-                        </div>
+        <section id="page-2" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="flex items-end justify-between mb-6 md:mb-8 border-b border-slate-700 pb-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">Context &
+                            Solution</h2>
+                        <p class="text-blue-500 font-mono text-[10px] md:text-sm mt-1">THE "WHY" & "HOW"</p>
                     </div>
-
-                    <!-- Solution Card -->
-                    <div class="glass-panel p-5 md:p-10 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col h-full">
-                        <!-- Glow Effect -->
-                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/20 blur-[50px] rounded-full"></div>
-                        
-                        <div class="flex items-center gap-3 mb-4 md:mb-6 relative z-10">
-                            <i class="fas fa-shield-alt text-2xl md:text-3xl text-cyan-400"></i>
-                            <h2 class="text-lg md:text-2xl font-bold text-cyan-400">THE SOLUTION</h2>
+                    <div class="text-2xl md:text-4xl text-slate-700 opacity-50"><i
+                            class="fas fa-balance-scale-right"></i></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
+                    <div
+                        class="bg-slate-800/50 border border-red-900/30 p-6 md:p-8 rounded-lg relative overflow-hidden group hover:bg-slate-800 transition-colors">
+                        <div
+                            class="absolute -right-6 -top-6 w-24 h-24 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition-all">
                         </div>
-                        <p class="text-gray-300 text-sm md:text-xl leading-relaxed mb-6 relative z-10">
-                            A prototype IDS integrating <span class="text-cyan-400 font-mono font-bold">Machine Learning (XGBoost)</span> and <span class="text-purple-400 font-mono font-bold">Deep Learning (DNN)</span> with Big Data analytics to detect anomalies that rule-based systems miss.
-                        </p>
-                        <div class="mt-auto p-3 md:p-4 bg-cyan-950/30 rounded border-l-2 border-cyan-500 relative z-10">
-                            <div class="text-[10px] text-cyan-400 font-mono mb-1">RESULT</div>
-                            <div class="text-xs md:text-sm text-white">Intelligent, Proactive, Real-time Defense.</div>
+                        <h3 class="text-red-400 font-bold text-base md:text-lg mb-4 flex items-center"><i
+                                class="fas fa-times-circle mr-3"></i>THE PROBLEM</h3>
+                        <p class="text-slate-300 leading-relaxed text-sm md:text-base">Traditional Intrusion Detection
+                            Systems (IDS) rely on <span
+                                class="text-red-300 border-b border-red-900 border-dashed">static signatures</span>,
+                            rendering them ineffective against <strong>Zero-Day Attacks</strong> and sophisticated,
+                            evolving threats.</p>
+                    </div>
+                    <div
+                        class="bg-slate-800/50 border border-blue-900/30 p-6 md:p-8 rounded-lg relative overflow-hidden group hover:bg-slate-800 transition-colors">
+                        <div
+                            class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all">
+                        </div>
+                        <h3 class="text-blue-400 font-bold text-base md:text-lg mb-4 flex items-center"><i
+                                class="fas fa-check-circle mr-3"></i>THE SOLUTION</h3>
+                        <p class="text-slate-300 leading-relaxed text-sm md:text-base">A prototype IDS that integrates
+                            advanced <strong>Machine Learning (XGBoost)</strong> and <strong>Deep Learning
+                                (DNN)</strong> algorithms with Big Data analytics to detect anomalies that rule-based
+                            systems miss.</p>
+                    </div>
+                </div>
+                <div class="border border-slate-700 bg-slate-900/80 p-6 md:p-8 rounded-xl">
+                    <h3 class="text-center text-lg md:text-xl font-bold text-white mb-6 md:mb-8">Big Data Strategy (The
+                        5 Vs)</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div class="text-center group">
+                            <div
+                                class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center border border-blue-500 mb-3 text-blue-500 transition-all shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <i class="fas fa-database text-sm md:text-base"></i>
+                            </div>
+                            <h4 class="text-blue-400 font-bold text-xs md:text-sm mb-1">VOLUME</h4>
+                            <p class="text-[10px] md:text-xs text-slate-400">2.8M+ records<br>(Sampling)</p>
+                        </div>
+                        <div class="text-center group">
+                            <div
+                                class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center border border-blue-500 mb-3 text-blue-500 transition-all shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <i class="fas fa-tachometer-alt text-sm md:text-base"></i>
+                            </div>
+                            <h4 class="text-blue-400 font-bold text-xs md:text-sm mb-1">VELOCITY</h4>
+                            <p class="text-[10px] md:text-xs text-slate-400">Gigabit speeds<br>(Vectorized)</p>
+                        </div>
+                        <div class="text-center group">
+                            <div
+                                class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center border border-blue-500 mb-3 text-blue-500 transition-all shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <i class="fas fa-shapes text-sm md:text-base"></i>
+                            </div>
+                            <h4 class="text-blue-400 font-bold text-xs md:text-sm mb-1">VARIETY</h4>
+                            <p class="text-[10px] md:text-xs text-slate-400">80+ features<br>(Protocols)</p>
+                        </div>
+                        <div class="text-center group">
+                            <div
+                                class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center border border-blue-500 mb-3 text-blue-500 transition-all shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <i class="fas fa-filter text-sm md:text-base"></i>
+                            </div>
+                            <h4 class="text-blue-400 font-bold text-xs md:text-sm mb-1">VERACITY</h4>
+                            <p class="text-[10px] md:text-xs text-slate-400">Clean Logs<br>(No Nulls)</p>
+                        </div>
+                        <div class="text-center group col-span-2 md:col-span-1">
+                            <div
+                                class="w-10 h-10 md:w-12 md:h-12 mx-auto bg-slate-800 rounded-full flex items-center justify-center border border-blue-500 mb-3 text-blue-500 transition-all shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <i class="fas fa-chart-line text-sm md:text-base"></i>
+                            </div>
+                            <h4 class="text-blue-400 font-bold text-xs md:text-sm mb-1">VALUE</h4>
+                            <p class="text-[10px] md:text-xs text-slate-400">Actionable<br>Visual Intel</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 3: 5 V's -->
-        <section class="page-section" id="page-3">
-            <div class="w-full max-w-7xl mx-auto">
-                <div class="text-center mb-8 md:mb-12 anim-element px-4">
-                    <h2 class="text-xl md:text-3xl font-bold tracking-widest text-white mb-2">BIG DATA STRATEGY (5 Vs)</h2>
-                    <p class="text-gray-400 font-mono text-xs md:text-base">Managing the CIC-IDS2017 Dataset Scale</p>
+        <!-- PAGE 3: METHODOLOGY -->
+        <section id="page-3" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="text-center mb-8 md:mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">METHODOLOGY & ENGINEERING</h2>
+                    <p class="text-slate-400 font-light text-sm md:text-base">Preventing Bias & Data Leakage through
+                        Rigorous Preprocessing</p>
                 </div>
-
-                <!-- Grid adapts from 1 column (mobile) to 5 columns (large screens) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 px-2">
-                    <!-- Card 1 -->
-                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element">
-                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i class="fas fa-database text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    <div class="tech-border p-6 md:p-8 rounded-lg bg-slate-900/50">
+                        <div class="flex justify-between items-center mb-4 md:mb-6"><span
+                                class="text-4xl md:text-5xl font-bold text-slate-700/50">01</span><i
+                                class="fas fa-broom text-xl md:text-2xl text-blue-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-4">Data Cleaning</h3>
+                        <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Replacing infinite values (+∞, -∞)
+                            and handling null entries to prevent mathematical instability in the models.</p>
+                        <div class="mt-4 h-1 w-full bg-slate-700 rounded overflow-hidden">
+                            <div class="h-full bg-blue-500 w-full"></div>
                         </div>
-                        <h3 class="font-bold text-sm md:text-lg text-white mb-1">VOLUME</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">2.8M+ records handled via <span class="text-blue-400">Stratified Sampling</span>.</p>
                     </div>
-
-                    <!-- Card 2 -->
-                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-1">
-                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i class="fas fa-bolt text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
+                    <div class="tech-border p-6 md:p-8 rounded-lg bg-slate-900/50">
+                        <div class="flex justify-between items-center mb-4 md:mb-6"><span
+                                class="text-4xl md:text-5xl font-bold text-slate-700/50">02</span><i
+                                class="fas fa-clone text-xl md:text-2xl text-purple-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-4">Deduplication</h3>
+                        <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Removing duplicate records to
+                            prevent "Data Leakage," ensuring the model learns underlying patterns rather than memorizing
+                            repeated rows.</p>
+                        <div class="mt-4 h-1 w-full bg-slate-700 rounded overflow-hidden">
+                            <div class="h-full bg-purple-500 w-full"></div>
                         </div>
-                        <h3 class="font-bold text-sm md:text-lg text-white mb-1">VELOCITY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Gigabit processing using <span class="text-blue-400">Vectorized Ops</span>.</p>
                     </div>
-
-                    <!-- Card 3 -->
-                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-2">
-                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i class="fas fa-project-diagram text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
+                    <div class="tech-border p-6 md:p-8 rounded-lg bg-slate-900/50">
+                        <div class="flex justify-between items-center mb-4 md:mb-6"><span
+                                class="text-4xl md:text-5xl font-bold text-slate-700/50">03</span><i
+                                class="fas fa-balance-scale text-xl md:text-2xl text-green-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-2 md:mb-4">Robust Scaling</h3>
+                        <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Applying statistical scaling
+                            (Median & IQR) to handle Outliers common in "bursty" DDoS attacks, protecting the model from
+                            noise.</p>
+                        <div class="mt-4 h-1 w-full bg-slate-700 rounded overflow-hidden">
+                            <div class="h-full bg-green-500 w-full"></div>
                         </div>
-                        <h3 class="font-bold text-sm md:text-lg text-white mb-1">VARIETY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">80+ features, diverse protocols (<span class="text-blue-400">TCP, UDP</span>).</p>
                     </div>
-
-                    <!-- Card 4 -->
-                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-3">
-                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i class="fas fa-filter text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-sm md:text-lg text-white mb-1">VERACITY</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Removing <span class="text-blue-400">Infinite & Nulls</span> for stability.</p>
-                    </div>
-
-                    <!-- Card 5 -->
-                    <div class="glass-panel p-4 md:p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-4">
-                        <div class="w-10 h-10 md:w-14 md:h-14 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-3 group-hover:bg-blue-600 transition duration-500">
-                            <i class="fas fa-chart-line text-sm md:text-xl text-blue-300 group-hover:text-white"></i>
-                        </div>
-                        <h3 class="font-bold text-sm md:text-lg text-white mb-1">VALUE</h3>
-                        <p class="text-[10px] md:text-xs text-gray-400 font-mono leading-tight">Raw logs to <span class="text-blue-400">Actionable Intel</span>.</p>
-                    </div>
+                </div>
+                <div
+                    class="mt-8 md:mt-12 bg-blue-900/20 border border-blue-500/30 p-4 rounded text-center text-blue-300 text-xs md:text-sm">
+                    <i class="fas fa-check-circle mr-2"></i> Result: High-fidelity datasets ready for training without
+                    bias.
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 4: METHODOLOGY -->
-        <section class="page-section" id="page-4">
-            <div class="w-full max-w-6xl mx-auto">
-                <div class="text-center mb-8 md:mb-12 anim-element">
-                    <h2 class="text-xl md:text-4xl font-bold mb-2 neon-text-blue">METHODOLOGY</h2>
-                    <div class="text-[10px] md:text-xs font-mono text-gray-500 tracking-wider">DATA ENGINEERING PIPELINE</div>
+        <!-- PAGE 4: INNOVATION IN FEATURE SELECTION (REDESIGNED) -->
+        <section id="page-4" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">INTELLIGENT FEATURE SELECTION</h2>
+                    <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+                        How we reduced computational load by 70% using
+                        <span class="text-blue-400 font-mono">RFECV (Recursive Feature Elimination)</span>.
+                    </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 relative">
-                    <!-- Connector line (Desktop only) -->
-                    <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-gray-700 to-transparent -z-10 hidden md:block transform -translate-y-1/2"></div>
+                <!-- Process Visualization -->
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-12">
 
-                    <!-- Card 1 -->
-                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-1 border-t-2 border-blue-500 h-full">
-                        <div class="text-blue-400 font-bold mb-3 text-lg md:text-2xl">01. PREPROCESSING</div>
-                        <div class="space-y-3">
-                            <div>
-                                <h4 class="text-white font-bold text-xs md:text-sm mb-1 uppercase">Cleaning</h4>
-                                <p class="text-[10px] md:text-xs text-gray-400">Handling mathematical instability (+∞, -∞) and missing values.</p>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-bold text-xs md:text-sm mb-1 uppercase">Deduplication</h4>
-                                <p class="text-[10px] md:text-xs text-gray-400">Removing redundant records to prevent Model Overfitting.</p>
-                            </div>
+                    <!-- Step 1: Input -->
+                    <div
+                        class="bg-slate-800/50 border border-slate-600 p-6 rounded-xl w-full md:w-64 text-center relative group hover:scale-105 transition-transform duration-300">
+                        <div
+                            class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-slate-700 px-3 py-1 rounded text-xs font-mono text-slate-300 shadow-md">
+                            STEP 01</div>
+                        <div
+                            class="text-5xl font-bold text-slate-500 mb-2 group-hover:text-slate-300 transition-colors">
+                            78</div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mb-4">Total Features</div>
+                        <div class="text-[10px] text-slate-500 bg-slate-900/50 p-2 rounded">
+                            Raw Network Data<br>(Noisy & Redundant)
                         </div>
                     </div>
 
-                    <!-- Card 2 -->
-                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-2 border-t-2 border-purple-500 h-full">
-                        <div class="text-purple-400 font-bold mb-3 text-lg md:text-2xl">02. SCALING</div>
-                        <p class="text-xs md:text-sm text-gray-300 mb-4 leading-relaxed">
-                            Applying <span class="text-white font-bold">Robust Scaling</span> (Median & IQR) instead of Standard Scaling.
-                        </p>
-                        <div class="bg-purple-900/20 p-2 rounded text-[10px] text-gray-300 border border-purple-500/30">
-                            <i class="fas fa-info-circle mr-1"></i> Critical for handling "bursty" DDoS attacks outliers.
+                    <!-- Arrow 1 -->
+                    <div class="text-blue-500 text-2xl animate-pulse transform rotate-90 md:rotate-0">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+
+                    <!-- Step 2: The Filter -->
+                    <div
+                        class="bg-blue-900/20 border border-blue-500/50 p-6 rounded-xl w-full md:w-64 text-center relative shadow-[0_0_30px_rgba(59,130,246,0.1)] hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] transition-shadow duration-300">
+                        <div
+                            class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 px-3 py-1 rounded text-xs font-mono text-white shadow-lg">
+                            THE FILTER</div>
+                        <div class="my-4 relative h-12 flex justify-center items-center">
+                            <i class="fas fa-filter text-4xl text-blue-400 animate-pulse"></i>
+                            <i class="fas fa-cog text-xl text-white absolute -bottom-1 -right-2 animate-spin-slow"></i>
+                        </div>
+                        <div class="text-sm font-bold text-blue-200 mb-1">XGBoost + RFECV</div>
+                        <div class="text-[10px] text-blue-300/80">
+                            Recursively ranks & prunes<br>weak contributors
                         </div>
                     </div>
 
-                    <!-- Card 3 -->
-                    <div class="glass-panel p-5 md:p-8 tilt-card bg-black/40 anim-element anim-delay-3 border-t-2 border-green-500 h-full">
-                        <div class="text-green-400 font-bold mb-3 text-lg md:text-2xl">03. SELECTION</div>
-                        <div class="text-xs md:text-sm text-gray-300 mb-2">Technique: <span class="font-mono text-white">RFECV + XGBoost</span></div>
-                        <div class="flex items-center justify-between bg-gray-800 p-3 rounded mb-3 border border-gray-700">
-                            <span class="text-red-400 line-through text-xs md:text-sm">78 Features</span>
-                            <i class="fas fa-arrow-right text-gray-500"></i>
-                            <span class="text-green-400 font-bold text-sm md:text-lg">23 Features</span>
+                    <!-- Arrow 2 -->
+                    <div class="text-green-500 text-2xl animate-pulse transform rotate-90 md:rotate-0">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+
+                    <!-- Step 3: Output -->
+                    <div
+                        class="bg-green-900/20 border border-green-500/50 p-6 rounded-xl w-full md:w-64 text-center relative shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-shadow duration-300">
+                        <div
+                            class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-green-600 px-3 py-1 rounded text-xs font-mono text-white shadow-lg">
+                            OPTIMIZED</div>
+                        <div class="text-5xl font-bold text-white mb-2">23</div>
+                        <div class="text-xs text-green-400 uppercase tracking-widest mb-4">Critical Features</div>
+                        <div
+                            class="text-[10px] text-green-300/80 bg-green-900/30 p-2 rounded border border-green-500/20">
+                            High Signal / Low Noise<br>Ready for Training
                         </div>
-                        <p class="text-[10px] md:text-xs text-gray-400">Reduced latency by 60% without losing accuracy.</p>
+                    </div>
+                </div>
+
+                <!-- Key Indicators Footer -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div
+                        class="flex items-center gap-3 bg-slate-800/80 p-4 rounded-lg border-l-4 border-blue-500 hover:translate-y-[-2px] transition-transform">
+                        <div class="bg-blue-500/20 p-2 rounded"><i class="fas fa-clock text-blue-400"></i></div>
+                        <div>
+                            <h4 class="text-white text-sm font-bold">Flow IAT</h4>
+                            <p class="text-xs text-slate-400">Inter-Arrival Time variance</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 bg-slate-800/80 p-4 rounded-lg border-l-4 border-purple-500 hover:translate-y-[-2px] transition-transform">
+                        <div class="bg-purple-500/20 p-2 rounded"><i
+                                class="fas fa-ruler-horizontal text-purple-400"></i></div>
+                        <div>
+                            <h4 class="text-white text-sm font-bold">Packet Length</h4>
+                            <p class="text-xs text-slate-400">Size variance anomalies</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-center gap-3 bg-slate-800/80 p-4 rounded-lg border-l-4 border-red-500 hover:translate-y-[-2px] transition-transform">
+                        <div class="bg-red-500/20 p-2 rounded"><i class="fas fa-flag text-red-400"></i></div>
+                        <div>
+                            <h4 class="text-white text-sm font-bold">TCP/UDP Flags</h4>
+                            <p class="text-xs text-slate-400">Protocol flag counts</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- PAGE 5: ARCHITECTURE -->
-        <section class="page-section" id="page-5">
-            <div class="w-full max-w-7xl mx-auto">
-                <div class="text-center mb-8 md:mb-12 anim-element">
-                    <h2 class="text-xl md:text-3xl font-bold mb-2 text-white">HYBRID ARCHITECTURE</h2>
-                    <p class="text-gray-400 font-mono text-[10px] md:text-sm uppercase">Staged Defense Pipeline</p>
+        <section id="page-5" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-7xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="text-center mb-8 md:mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">HYBRID ARCHITECTURE</h2>
+                    <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">A Staged Architecture functioning
+                        as a hierarchical defense pipeline.</p>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-
-                    <!-- Layer 1 -->
-                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element border border-gray-600 bg-gray-900/50 flex flex-col relative">
-                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-gray-800 text-[10px] font-mono border border-gray-600 rounded-full text-gray-300">LAYER 01</div>
-                        
-                        <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">SIGNATURE ENGINE</h3>
-                        <div class="text-center text-[10px] font-mono text-yellow-500 mb-4">(THE SHIELD)</div>
-                        
-                        <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
-                            <p>Filters known threats (Blacklist IP/Ports) instantly.</p>
-                            <p class="text-[10px] text-gray-500 border-t border-gray-700 pt-2">Goal: Offload heavy traffic from AI models.</p>
+                <div class="flex flex-col lg:flex-row gap-4 md:gap-6 items-stretch justify-center">
+                    <div
+                        class="flex-1 bg-gradient-to-b from-slate-800 to-slate-900 border border-red-900/50 p-5 md:p-6 rounded-xl relative group hover:border-red-500 transition-all duration-500">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-red-600 rounded-t-xl"></div>
+                        <div class="mb-4 flex justify-between items-start"><span
+                                class="text-red-500 font-mono text-[10px] md:text-xs font-bold border border-red-500/30 px-2 py-1 rounded bg-red-900/20">LAYER
+                                1</span><i class="fas fa-shield-alt text-xl md:text-2xl text-red-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-1">Signature Rule Engine</h3>
+                        <p class="text-[10px] md:text-xs text-red-400 font-bold mb-4 uppercase tracking-wider">(The
+                            Shield)</p>
+                        <div class="space-y-4 text-xs md:text-sm text-slate-400">
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Function</span>
+                                <p>Deterministic, high-speed filtering.</p>
+                            </div>
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Goal</span>
+                                <p>Immediate blocking of known threats.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Layer 2 (Highlighted) -->
-                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-1 border border-blue-500 bg-blue-900/20 flex flex-col relative transform md:-translate-y-4 shadow-[0_0_20px_rgba(0,100,255,0.15)] z-10">
-                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-blue-700 text-[10px] font-bold font-mono border border-blue-400 rounded-full text-white">LAYER 02</div>
-
-                        <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">XGBOOST</h3>
-                        <div class="text-center text-[10px] font-mono text-blue-400 mb-4">(STRUCTURED AI)</div>
-                        
-                        <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
-                            <p>Gradient Boosting for ultra-fast classification of packet headers.</p>
-                            <p class="text-[10px] text-blue-300 border-t border-blue-900 pt-2">Goal: Catch DDoS & Port Scans.</p>
+                    <div class="flex lg:hidden items-center justify-center py-2"><i
+                            class="fas fa-chevron-down text-slate-600 text-xl"></i></div>
+                    <div class="hidden lg:flex items-center justify-center">
+                        <div class="h-1 w-8 bg-slate-700"></div><i class="fas fa-chevron-right text-slate-500"></i>
+                    </div>
+                    <div
+                        class="flex-1 bg-gradient-to-b from-slate-800 to-slate-900 border border-blue-900/50 p-5 md:p-6 rounded-xl relative group hover:border-blue-500 transition-all duration-500">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-blue-600 rounded-t-xl"></div>
+                        <div class="mb-4 flex justify-between items-start"><span
+                                class="text-blue-500 font-mono text-[10px] md:text-xs font-bold border border-blue-500/30 px-2 py-1 rounded bg-blue-900/20">LAYER
+                                2</span><i class="fas fa-bolt text-xl md:text-2xl text-blue-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-1">XGBoost Classifier</h3>
+                        <p class="text-[10px] md:text-xs text-blue-400 font-bold mb-4 uppercase tracking-wider">(The
+                            Speed)</p>
+                        <div class="space-y-4 text-xs md:text-sm text-slate-400">
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Function</span>
+                                <p>Extreme Gradient Boosting.</p>
+                            </div>
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Goal</span>
+                                <p>Precise classification of complex, structured attacks.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Layer 3 -->
-                    <div class="glass-panel p-5 md:p-6 tilt-card anim-element anim-delay-2 border border-purple-500 bg-purple-900/20 flex flex-col relative">
-                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-purple-800 text-[10px] font-mono border border-purple-600 rounded-full text-white">LAYER 03</div>
-
-                        <h3 class="text-base md:text-xl font-bold text-center mt-2 mb-1 text-white">DEEP NEURAL NET</h3>
-                        <div class="text-center text-[10px] font-mono text-purple-400 mb-4">(COMPLEX PATTERNS)</div>
-                        
-                        <div class="flex-grow space-y-3 bg-black/30 p-3 rounded text-xs md:text-sm text-gray-300">
-                            <p>Deep Learning (DNN) to find non-linear relationships.</p>
-                            <p class="text-[10px] text-purple-300 border-t border-purple-900 pt-2">Goal: Detect Botnets & Web Attacks.</p>
+                    <div class="flex lg:hidden items-center justify-center py-2"><i
+                            class="fas fa-chevron-down text-slate-600 text-xl"></i></div>
+                    <div class="hidden lg:flex items-center justify-center">
+                        <div class="h-1 w-8 bg-slate-700"></div><i class="fas fa-chevron-right text-slate-500"></i>
+                    </div>
+                    <div
+                        class="flex-1 bg-gradient-to-b from-slate-800 to-slate-900 border border-purple-900/50 p-5 md:p-6 rounded-xl relative group hover:border-purple-500 transition-all duration-500">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-purple-600 rounded-t-xl"></div>
+                        <div class="mb-4 flex justify-between items-start"><span
+                                class="text-purple-500 font-mono text-[10px] md:text-xs font-bold border border-purple-500/30 px-2 py-1 rounded bg-purple-900/20">LAYER
+                                3</span><i class="fas fa-brain text-xl md:text-2xl text-purple-500"></i></div>
+                        <h3 class="text-lg md:text-xl font-bold text-white mb-1">Deep Neural Network</h3>
+                        <p class="text-[10px] md:text-xs text-purple-400 font-bold mb-4 uppercase tracking-wider">(The
+                            Brain)</p>
+                        <div class="space-y-4 text-xs md:text-sm text-slate-400">
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Function</span>
+                                <p>Deep Learning with hidden layers.</p>
+                            </div>
+                            <div><span class="block text-slate-500 text-[10px] font-bold uppercase mb-1">Goal</span>
+                                <p>Detecting non-linear, highly complex patterns.</p>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
 
-        <!-- PAGE 6: RESULTS -->
-        <section class="page-section" id="page-6">
-            <div class="w-full max-w-7xl mx-auto">
-                <div class="text-center mb-6 md:mb-10 anim-element">
-                    <h2 class="text-xl md:text-3xl font-bold text-white mb-2">VALIDATION & RESULTS</h2>
-                    <p class="text-gray-400 font-mono text-[10px] md:text-sm">TESTED ON 30% HELD-OUT DATA</p>
+        <!-- PAGE 6: PERFORMANCE -->
+        <section id="page-6" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="flex flex-col md:flex-row items-center justify-between mb-8 border-b border-slate-700 pb-4">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2 md:mb-0">PERFORMANCE VALIDATION</h2>
+                    <span class="text-green-500 font-mono text-sm"><i
+                            class="fas fa-check-circle mr-2"></i>VALIDATED</span>
                 </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 items-start">
-
-                    <!-- Stats Panel -->
-                    <div class="glass-panel p-5 md:p-8 anim-element anim-delay-1">
-                        <h3 class="font-mono text-blue-400 mb-4 border-b border-blue-900/50 pb-2 text-sm md:text-base tracking-widest">XGBOOST METRICS</h3>
-                        
-                        <div class="flex items-center justify-between mb-6">
-                            <span class="text-base md:text-xl font-bold text-white">ACCURACY</span>
-                            <span class="text-4xl md:text-5xl font-bold text-green-400 drop-shadow-[0_0_10px_rgba(0,255,0,0.5)]">99.9%</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div
+                        class="bg-slate-800/50 p-6 md:p-8 rounded-lg border border-slate-700 hover:border-green-500 transition-colors">
+                        <h3 class="text-white font-bold text-lg md:text-xl mb-4 md:mb-6 flex items-center"><span
+                                class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>XGBoost</h3>
+                        <div class="flex justify-between items-end mb-4"><span
+                                class="text-slate-400 text-xs md:text-sm uppercase tracking-widest">Test Set
+                                Accuracy</span><span class="text-4xl md:text-5xl font-bold text-white">100%</span></div>
+                        <div class="w-full bg-slate-700 h-2 rounded-full mb-6 md:mb-8">
+                            <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
                         </div>
-
-                        <div class="grid grid-cols-2 gap-3 text-center text-xs md:text-sm font-mono mb-4">
-                            <div class="bg-gray-800/50 p-2 md:p-3 rounded border border-gray-700">
-                                <div class="text-gray-500 text-[10px]">BENIGN</div>
-                                <div class="text-white font-bold text-lg">28,521</div>
-                            </div>
-                            <div class="bg-gray-800/50 p-2 md:p-3 rounded border border-gray-700">
-                                <div class="text-gray-500 text-[10px]">ATTACKS</div>
-                                <div class="text-white font-bold text-lg">38,402</div>
-                            </div>
-                            <div class="bg-red-900/10 p-2 md:p-3 rounded col-span-2 border border-red-500/30 flex justify-between items-center px-4">
-                                <div class="text-red-400 text-[10px] uppercase">Total Misclassified</div>
-                                <div class="text-white font-bold text-xl">2</div>
-                            </div>
+                        <div class="bg-slate-900 p-4 rounded text-xs md:text-sm border border-slate-700">
+                            <p class="text-slate-300 font-bold mb-2 uppercase text-[10px] md:text-xs">Confusion Matrix:
+                            </p>
+                            <div class="flex justify-between text-slate-400 text-xs mb-1"><span>Benign
+                                    (28,521)</span><span class="text-green-400"><i class="fas fa-check"></i>
+                                    Correct</span></div>
+                            <div class="flex justify-between text-slate-400 text-xs mb-1"><span>Attacks
+                                    (38,402)</span><span class="text-green-400"><i class="fas fa-check"></i>
+                                    Correct</span></div>
+                            <div class="mt-2 pt-2 border-t border-slate-700 text-[10px] md:text-xs text-slate-500">
+                                Perfect separation with only 2 misclassifications.</div>
                         </div>
                     </div>
-
-                    <!-- Comparison Panel -->
-                    <div class="glass-panel p-5 md:p-8 anim-element anim-delay-2">
-                        <h3 class="font-mono text-red-400 mb-4 border-b border-red-900/50 pb-2 text-sm md:text-base tracking-widest">TRADITIONAL vs AI</h3>
-
-                        <div class="space-y-6">
-                            <!-- Traditional -->
-                            <div>
-                                <div class="flex justify-between text-[10px] font-mono mb-1 text-red-400">
-                                    <span>TRADITIONAL IDS</span>
-                                    <span>HIGH ERROR RATE</span>
-                                </div>
-                                <div class="flex gap-2">
-                                    <div class="bg-red-900/20 border border-red-500/30 p-2 flex-1 text-center rounded">
-                                        <div class="text-lg md:text-xl font-bold text-red-500">1,075</div>
-                                        <div class="text-[8px] text-red-300">FALSE ALARMS</div>
-                                    </div>
-                                    <div class="bg-red-900/20 border border-red-500/30 p-2 flex-1 text-center rounded">
-                                        <div class="text-lg md:text-xl font-bold text-red-500">446</div>
-                                        <div class="text-[8px] text-red-300">MISSED ATTACKS</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Hybrid -->
-                            <div class="pt-2">
-                                <div class="flex justify-between text-[10px] font-mono mb-1 text-green-400">
-                                    <span>OUR HYBRID SYSTEM</span>
-                                    <span>NEAR PERFECT</span>
-                                </div>
-                                <div class="w-full bg-gray-800 h-6 md:h-8 rounded overflow-hidden relative border border-green-500/50 shadow-[0_0_10px_rgba(0,255,0,0.2)]">
-                                    <div class="absolute top-0 left-0 h-full bg-green-600 flex items-center px-4 text-[10px] md:text-xs font-bold text-white bar-fill" style="width: 0%" data-width="99.9%">ACCURACY: ~100%</div>
-                                </div>
-                            </div>
+                    <div
+                        class="bg-slate-800/50 p-6 md:p-8 rounded-lg border border-slate-700 hover:border-purple-500 transition-colors">
+                        <h3 class="text-white font-bold text-lg md:text-xl mb-4 md:mb-6 flex items-center"><span
+                                class="w-3 h-3 bg-purple-500 rounded-full mr-3"></span>Deep Neural Network</h3>
+                        <div class="flex justify-between items-end mb-4"><span
+                                class="text-slate-400 text-xs md:text-sm uppercase tracking-widest">Model
+                                Accuracy</span><span class="text-4xl md:text-5xl font-bold text-white">~99.9%</span>
+                        </div>
+                        <div class="w-full bg-slate-700 h-2 rounded-full mb-6 md:mb-8">
+                            <div class="bg-purple-500 h-2 rounded-full" style="width: 99.9%"></div>
+                        </div>
+                        <div class="bg-slate-900 p-4 rounded text-xs md:text-sm border border-slate-700">
+                            <p class="text-slate-300 font-bold mb-2 uppercase text-[10px] md:text-xs">Performance
+                                Metrics:</p>
+                            <div class="flex justify-between text-slate-400 text-xs mb-1"><span>Robustness</span><span
+                                    class="text-purple-400">High Generalization</span></div>
+                            <div class="flex justify-between text-slate-400 text-xs mb-1"><span>Error Rate</span><span
+                                    class="text-purple-400">4 Misclassifications</span></div>
+                            <div class="mt-2 pt-2 border-t border-slate-700 text-[10px] md:text-xs text-slate-500">
+                                Proven robustness against overfitting.</div>
                         </div>
                     </div>
-
+                </div>
+                <div class="bg-red-900/10 p-4 md:p-6 rounded-lg border border-red-900/30 relative overflow-hidden">
+                    <div
+                        class="absolute right-0 top-0 p-2 md:p-4 text-red-900/20 text-4xl md:text-6xl font-bold opacity-20 pointer-events-none">
+                        FAIL</div>
+                    <h3 class="text-red-400 font-bold text-base md:text-lg mb-4">Traditional Signatures (Legacy)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><span class="block text-xl md:text-2xl font-bold text-white">1,075</span><span
+                                class="text-[10px] md:text-xs text-red-400 uppercase">False Positives</span></div>
+                        <div><span class="block text-xl md:text-2xl font-bold text-white">446</span><span
+                                class="text-[10px] md:text-xs text-red-400 uppercase">Missed Attacks</span></div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- PAGE 7: DASHBOARD -->
-        <section class="page-section" id="page-7">
-            <div class="w-full max-w-7xl mx-auto">
-                <div class="text-center mb-6 md:mb-10 anim-element">
-                    <h2 class="text-xl md:text-3xl font-bold text-white mb-2">OPERATIONAL DASHBOARD</h2>
-                    <p class="text-gray-400 font-mono text-[10px] md:text-sm">VISUAL INTELLIGENCE</p>
+        <section id="page-7" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <div class="text-center mb-8 md:mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white uppercase tracking-wider">Operational Dashboard
+                    </h2>
+                    <p class="text-slate-400 text-sm md:text-base">Visualization & Security Intelligence</p>
                 </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 items-center">
-
-                    <!-- Dashboard Mockup -->
-                    <div class="glass-panel p-2 rounded-xl shadow-[0_0_50px_rgba(0,243,255,0.05)] anim-element anim-delay-1 border border-gray-700 bg-[#0e1117]">
-                        <div class="rounded-lg overflow-hidden p-3 md:p-5 font-mono text-xs">
-                            <!-- Mock Header -->
-                            <div class="flex items-center gap-2 border-b border-gray-700 pb-2 mb-4">
-                                <div class="flex gap-1.5">
-                                    <div class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-                                    <div class="w-2.5 h-2.5 rounded-full bg-yellow-500"></div>
-                                    <div class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
-                                </div>
-                                <span class="ml-auto text-gray-500 text-[10px]">admin@ids-dashboard</span>
+                <div class="bg-white rounded-lg shadow-2xl overflow-hidden mb-6 md:mb-10 flex flex-col">
+                    <div class="bg-slate-200 px-4 py-2 flex gap-2 items-center border-b border-slate-300 shrink-0">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        <div
+                            class="ml-4 bg-white px-3 py-1 rounded text-[10px] md:text-xs text-slate-500 flex-grow font-mono truncate">
+                            localhost:8501/security-monitor</div>
+                    </div>
+                    <div class="flex flex-col lg:grid lg:grid-cols-3 grow">
+                        <div class="p-6 md:p-8 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200">
+                            <div
+                                class="inline-block px-2 py-1 bg-red-100 text-red-600 rounded text-[10px] font-bold mb-4">
+                                <i class="fas fa-fire mr-1"></i> STREAMLIT APP
                             </div>
-
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-                                <div class="bg-gray-800/50 p-3 rounded border border-blue-900/30">
-                                    <div class="text-gray-500 text-[9px]">TRAFFIC FLOWS</div>
-                                    <div class="text-blue-400 text-base md:text-xl font-bold">2.8M+</div>
-                                </div>
-                                <div class="bg-gray-800/50 p-3 rounded border border-red-900/30">
-                                    <div class="text-gray-500 text-[9px]">THREAT STATUS</div>
-                                    <div class="text-red-500 text-base md:text-xl font-bold animate-pulse">ACTIVE</div>
+                            <h3 class="text-xl md:text-2xl font-bold text-slate-800 mb-4">Value for Analysts</h3>
+                            <ul class="space-y-4 text-xs md:text-sm text-slate-600">
+                                <li class="flex items-start"><i
+                                        class="fas fa-check text-green-500 mt-1 mr-3 shrink-0"></i><span>Transforms
+                                        cryptic logs into visual charts.</span></li>
+                                <li class="flex items-start"><i
+                                        class="fas fa-bell text-red-500 mt-1 mr-3 shrink-0"></i><span>Provides immediate
+                                        alerts on attacks.</span></li>
+                                <li class="flex items-start"><i
+                                        class="fas fa-brain text-blue-500 mt-1 mr-3 shrink-0"></i><span>Empowers
+                                        data-driven decisions.</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-span-2 bg-slate-900 p-4 md:p-6 relative min-h-[300px]">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent h-1 w-full animate-pulse z-10"
+                                style="top: 50%;"></div>
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="text-white font-bold text-sm md:text-base"><i
+                                        class="fas fa-satellite-dish mr-2 text-green-500"></i>Traffic Monitor</h4><span
+                                    class="animate-pulse text-red-500 font-bold text-[10px]">● LIVE</span>
+                            </div>
+                            <div
+                                class="h-32 bg-slate-800/50 rounded border border-slate-700 mb-4 relative overflow-hidden">
+                                <svg viewBox="0 0 100 20" class="w-full h-full absolute bottom-0 left-0"
+                                    preserveAspectRatio="none">
+                                    <path
+                                        d="M0,20 L5,18 L10,19 L15,18 L20,10 L25,18 L30,15 L35,18 L40,19 L45,18 L50,15 L55,4 L60,15 L65,18 L70,19 L75,18 L80,15 L85,18 L90,19 L95,18 L100,20 Z"
+                                        fill="rgba(239, 68, 68, 0.2)" stroke="#ef4444" stroke-width="0.5" />
+                                </svg>
+                                <div class="absolute top-2 right-2 text-[10px] text-red-400 font-mono">SPIKE DETECTED
                                 </div>
                             </div>
-
-                            <div class="space-y-2">
-                                <div class="bg-red-900/10 p-2 rounded border-l-2 border-red-500">
-                                    <div class="text-red-400 font-bold flex justify-between">
-                                        <span>> DDoS Alert</span>
-                                        <span class="text-[9px] opacity-70">NOW</span>
-                                    </div>
-                                    <div class="text-gray-500 text-[9px]">Src: 192.168.1.105 -> Target: Port 80</div>
-                                </div>
-                                <div class="bg-yellow-900/10 p-2 rounded border-l-2 border-yellow-500">
-                                    <div class="text-yellow-400 font-bold">> Anomaly</div>
-                                    <div class="text-gray-500 text-[9px]">Packet variance exceeding threshold</div>
-                                </div>
+                            <div class="font-mono text-[10px] text-slate-400 space-y-2">
+                                <div class="border-b border-slate-800 pb-1 flex justify-between"><span
+                                        class="text-blue-400">15:28:00</span><span>192.168.3.1</span><span
+                                        class="text-red-500 font-bold">CRIT</span></div>
+                                <div class="border-b border-slate-800 pb-1 flex justify-between"><span
+                                        class="text-blue-400">15:28:01</span><span>192.168.10.5</span><span
+                                        class="text-green-500">OK</span></div>
+                                <div class="border-b border-slate-800 pb-1 flex justify-between"><span
+                                        class="text-blue-400">15:28:05</span><span>192.168.12.9</span><span
+                                        class="text-red-500 font-bold">DDoS</span></div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Text Content -->
-                    <div class="anim-element anim-delay-2 flex flex-col justify-center">
-                        <h3 class="text-lg md:text-2xl font-bold text-white mb-4">EMPOWERING ANALYSTS</h3>
-                        <ul class="space-y-4 mb-8">
-                            <li class="flex items-start gap-3">
-                                <div class="mt-1 bg-blue-900/50 p-1.5 rounded-full"><i class="fas fa-chart-pie text-blue-400 text-xs"></i></div>
-                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Transforms cryptic logs into clear visualization for faster decision making.</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <div class="mt-1 bg-red-900/50 p-1.5 rounded-full"><i class="fas fa-bell text-red-400 text-xs"></i></div>
-                                <span class="text-gray-300 text-xs md:text-sm leading-relaxed">Real-time alerts reduce response time from minutes to milliseconds.</span>
-                            </li>
-                        </ul>
-
-                        <a href="#" class="github-btn group relative px-6 py-3 font-bold text-xs md:text-sm tracking-wider uppercase rounded-sm overflow-hidden text-center w-full sm:w-auto self-start">
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                <i class="fab fa-github text-lg"></i>
-                                View Project
-                                <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
-                            </span>
-                        </a>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- PAGE 8: FUTURE ROADMAP (NEW) -->
+        <section id="page-8" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-6xl mx-auto v-center min-h-[calc(100dvh-100px)]">
+                <h2 class="text-2xl md:text-3xl font-bold text-white text-center mb-12 uppercase tracking-wider">Future
+                    Roadmap & Scalability</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Streaming -->
+                    <div
+                        class="bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-blue-500 transition-all group">
+                        <div
+                            class="w-16 h-16 bg-blue-900/30 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-stream text-3xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Streaming</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            <strong class="text-blue-400 block mb-1">Apache Kafka Integration</strong>
+                            Reducing detection latency to milliseconds for high-throughput environments.
+                        </p>
+                    </div>
+                    <!-- Edge AI -->
+                    <div
+                        class="bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-purple-500 transition-all group">
+                        <div
+                            class="w-16 h-16 bg-purple-900/30 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-microchip text-3xl text-purple-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Edge AI</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            <strong class="text-purple-400 block mb-1">IoT Gateway Deployment</strong>
+                            Lightweight models securing the network edge without cloud dependency.
+                        </p>
+                    </div>
+                    <!-- Defense -->
+                    <div
+                        class="bg-slate-800/50 p-8 rounded-xl border border-slate-700 hover:border-red-500 transition-all group">
+                        <div
+                            class="w-16 h-16 bg-red-900/30 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-shield-virus text-3xl text-red-400"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-3">Defense</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            <strong class="text-red-400 block mb-1">Adversarial Robustness</strong>
+                            Hardening models against AI-spoofing attacks and evasion techniques.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 9: CONCLUSION (NEW) -->
+        <section id="page-9" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-4xl mx-auto v-center min-h-[calc(100dvh-100px)] text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-12">CONCLUSION</h2>
+
+                <div class="relative flex justify-center items-center mb-12">
+                    <div class="flex items-center -space-x-6">
+                        <div
+                            class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-red-500/30 flex items-center justify-center bg-slate-900/50 backdrop-blur">
+                            <span class="font-bold text-red-400">RULES</span>
+                        </div>
+                        <div
+                            class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-blue-500/30 flex items-center justify-center bg-slate-900/50 backdrop-blur z-10">
+                            <i class="fas fa-shield-alt text-4xl text-white"></i>
+                        </div>
+                        <div
+                            class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-purple-500/30 flex items-center justify-center bg-slate-900/50 backdrop-blur">
+                            <span class="font-bold text-purple-400">AI / DL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-8 rounded-lg border-l-4 border-green-500 shadow-2xl">
+                    <p class="text-lg md:text-xl text-slate-200 leading-relaxed font-light">
+                        The <span class="font-bold text-white">Hybrid Architecture</span> (Rules + ML + DL) is the
+                        optimal solution for bridging the security gap against Zero-Day exploits.
+                    </p>
+                    <p class="mt-4 text-slate-400 text-sm">
+                        Combining the speed of deterministic rules with the adaptive intelligence of Deep Learning.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 10: GITHUB (RENAMED) -->
+        <section id="page-10" class="page-section px-4 pt-6 md:pt-10">
+            <div class="max-w-4xl mx-auto v-center min-h-[calc(100dvh-100px)] text-center">
+                <div
+                    class="w-20 h-20 md:w-24 md:h-24 mb-6 md:mb-8 bg-slate-800 rounded-full flex items-center justify-center border-2 border-slate-700 shadow-[0_0_30px_rgba(59,130,246,0.2)] mx-auto">
+                    <i class="fab fa-github text-4xl md:text-5xl text-white"></i>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4">PROJECT REPOSITORY</h2>
+                <p class="text-blue-400 font-mono text-xs md:text-sm mb-8 md:mb-10 tracking-widest uppercase">Open
+                    Source Access</p>
+                <p class="text-slate-400 max-w-xl text-sm md:text-lg mb-10 md:mb-12 leading-relaxed mx-auto">Access the
+                    full source code for the Hybrid IDS, including the XGBoost model training scripts, DNN architecture,
+                    and the Streamlit dashboard.</p>
+                <a href="#" class="neon-btn mx-auto"><i class="fas fa-code-branch mr-3"></i> View on GitHub</a>
+                <div
+                    class="mt-12 md:mt-16 grid grid-cols-3 gap-4 md:gap-8 text-slate-500 text-[10px] md:text-xs font-mono w-full max-w-md mx-auto">
+                    <div class="text-center"><i
+                            class="fas fa-shield-alt block text-base md:text-lg mb-2 text-slate-700"></i>MIT LICENSE
+                    </div>
+                    <div class="text-center"><i
+                            class="fas fa-code block text-base md:text-lg mb-2 text-slate-700"></i>PYTHON 3.9+</div>
+                    <div class="text-center"><i
+                            class="fas fa-star block text-base md:text-lg mb-2 text-slate-700"></i>V1.0.0</div>
+                </div>
+                <div class="mt-16 md:mt-20 text-slate-600 text-[10px] uppercase tracking-widest pb-4">Confidential
+                    Technical Dossier</div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- NAVIGATION BAR FIXED BOTTOM -->
-    <div class="fixed bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-2 bg-black/80 backdrop-blur-xl p-2 px-3 rounded-full border border-white/10 shadow-lg border-t border-gray-700">
-        <button id="prev-btn" class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center" onclick="changePage(-1)">
-            <i class="fas fa-chevron-left"></i> <span class="hidden md:inline md:ml-2">PREV</span>
-        </button>
-
-        <div class="flex gap-1.5 md:gap-2" id="nav-dots">
-            <!-- Dots generated via JS -->
+    <!-- NAVIGATION FOOTER -->
+    <nav class="cyber-nav">
+        <button id="prevBtn" class="nav-btn" onclick="changePage(-1)" disabled aria-label="Previous Page"><i
+                class="fas fa-chevron-left"></i> <span class="hidden md:inline">Prev</span></button>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div id="progressBar" class="progress-bar-fill"></div>
+            </div>
+            <div id="pageIndicator" class="page-indicator">PAGE 01 / 10</div>
         </div>
+        <button id="nextBtn" class="nav-btn" onclick="changePage(1)" aria-label="Next Page"><span
+                class="hidden md:inline">Next</span> <i class="fas fa-chevron-right"></i></button>
+    </nav>
 
-        <button id="next-btn" class="nav-control w-8 h-8 md:w-auto md:h-auto md:px-4 md:py-2 rounded-full md:rounded text-xs flex items-center justify-center" onclick="changePage(1)">
-            <span class="hidden md:inline md:mr-2">NEXT</span> <i class="fas fa-chevron-right"></i>
-        </button>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // --- PAGE NAVIGATION LOGIC ---
+        // Loading Screen Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('splash-screen');
+            const progress = document.getElementById('splash-progress');
+            setTimeout(() => { progress.style.width = '100%'; }, 100);
+            setTimeout(() => {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => { loader.style.display = 'none'; }, 1000);
+            }, 5000);
+        });
+
+        // Matrix Rain
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, columns, rainDrops;
+
+        function resizeMatrix() {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height;
+            const fontSize = 16; columns = Math.ceil(width / fontSize);
+            rainDrops = Array(columns).fill(1);
+        }
+        resizeMatrix(); window.addEventListener('resize', resizeMatrix);
+
+        const alphabet = '0123456789ABCDEF';
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.05)'; ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#1e3a8a'; ctx.font = '16px monospace';
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * 16, rainDrops[i] * 16);
+                if (rainDrops[i] * 16 > height && Math.random() > 0.975) rainDrops[i] = 0;
+                rainDrops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+        // Pagination
         let currentPage = 1;
-        const totalPages = 7;
-        const pageIndicator = document.getElementById('page-indicator');
-        const navDotsContainer = document.getElementById('nav-dots');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        // Create Navigation Dots
-        for (let i = 1; i <= totalPages; i++) {
-            const dot = document.createElement('div');
-            dot.className = `w-1.5 h-1.5 md:w-2.5 md:h-2.5 rounded-full border border-blue-500 cursor-pointer transition-all duration-300 ${i === 1 ? 'bg-blue-500' : 'bg-transparent'}`;
-            dot.onclick = () => goToPage(i);
-            navDotsContainer.appendChild(dot);
-        }
-        const dots = navDotsContainer.children;
-
-        function updateUI() {
-            // Update Page classes
-            document.querySelectorAll('.page-section').forEach((section, index) => {
-                if (index + 1 === currentPage) {
-                    section.classList.add('active-page');
-                    // Reset scroll position when entering page
-                    section.scrollTop = 0;
-                    
-                    // Trigger Bar Animations
-                    const bars = section.querySelectorAll('.bar-fill');
-                    setTimeout(() => {
-                        bars.forEach(bar => bar.style.width = bar.getAttribute('data-width'));
-                    }, 100);
-                } else {
-                    section.classList.remove('active-page');
-                    // Reset bars
-                    const bars = section.querySelectorAll('.bar-fill');
-                    bars.forEach(bar => bar.style.width = '0%');
-                }
-            });
-
-            // Update Indicator
-            pageIndicator.innerText = `PG 0${currentPage}/0${totalPages}`;
-
-            // Update Buttons
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-
-            // Update Dots
-            Array.from(dots).forEach((dot, index) => {
-                if (index + 1 === currentPage) {
-                    dot.classList.remove('bg-transparent');
-                    dot.classList.add('bg-blue-500', 'shadow-[0_0_8px_#00f3ff]');
-                    dot.style.transform = 'scale(1.2)';
-                } else {
-                    dot.classList.add('bg-transparent');
-                    dot.classList.remove('bg-blue-500', 'shadow-[0_0_8px_#00f3ff]');
-                    dot.style.transform = 'scale(1)';
-                }
-            });
-        }
+        const totalPages = 10;
 
         function changePage(direction) {
-            if (direction === 1 && currentPage < totalPages) currentPage++;
-            else if (direction === -1 && currentPage > 1) currentPage--;
-            updateUI();
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                document.getElementById(`page-${currentPage}`).classList.remove('active');
+                currentPage = newPage;
+                const newEl = document.getElementById(`page-${currentPage}`);
+                newEl.classList.add('active');
+                setTimeout(() => { newEl.scrollTop = 0; }, 10);
+                updateUI();
+            }
         }
 
-        function goToPage(pageNum) {
-            currentPage = pageNum;
-            updateUI();
-        }
-
-        // Keyboard Navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                if (currentPage < totalPages) changePage(1);
-            }
-            if (e.key === 'ArrowLeft') {
-                if (currentPage > 1) changePage(-1);
-            }
-        });
-
-        // Initialize UI
-        updateUI();
-
-        // --- SYSTEM BOOT SEQUENCE ---
-        const bootTextContainer = document.getElementById('boot-text');
-        const bootScreen = document.getElementById('boot-screen');
-        const lines = [
-            "> INITIALIZING KERNEL...",
-            "> LOADING MODULES: XGBOOST, TENSORFLOW...",
-            "> OPTIMIZING VIEWPORT...",
-            "> SYSTEM READY."
-        ];
-
-        let lineIndex = 0;
-
-        function typeBootLines() {
-            if (lineIndex < lines.length) {
-                const div = document.createElement('div');
-                div.textContent = lines[lineIndex];
-                div.style.marginBottom = "5px";
-                if (lineIndex === lines.length - 1) div.style.color = "#00f3ff";
-                bootTextContainer.appendChild(div);
-                lineIndex++;
-                setTimeout(typeBootLines, 150);
+        function updateUI() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            prevBtn.disabled = (currentPage === 1);
+            if (currentPage === totalPages) {
+                nextBtn.innerHTML = '<span class="hidden md:inline">FINISH</span><span class="md:hidden">END</span> <i class="fas fa-check"></i>';
+                nextBtn.classList.add('text-green-500', 'border-green-500');
             } else {
-                setTimeout(() => {
-                    bootScreen.style.opacity = '0';
-                    setTimeout(() => { bootScreen.style.display = 'none'; }, 800);
-                }, 400);
+                nextBtn.innerHTML = '<span class="hidden md:inline">Next</span><span class="md:hidden">Next</span> <i class="fas fa-chevron-right"></i>';
+                nextBtn.classList.remove('text-green-500', 'border-green-500');
             }
+            const progress = ((currentPage - 1) / (totalPages - 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('pageIndicator').innerText = `PAGE ${String(currentPage).padStart(2, '0')} / ${totalPages}`;
         }
 
-        window.addEventListener('load', typeBootLines);
-
-        // --- BACKGROUND PARTICLES ---
-        const canvas = document.getElementById('canvas-container');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(0, 243, 255, 0.4)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        // Adjust particle count based on screen size for performance
-        const particleCount = window.innerWidth < 768 ? 30 : 60;
-        for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-
-        let mouse = { x: null, y: null };
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
+        updateUI();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changePage(1);
+            if (e.key === 'ArrowLeft') changePage(-1);
         });
-
-        // Touch support for particles
-        window.addEventListener('touchmove', (e) => {
-            if(e.touches.length > 0) {
-                mouse.x = e.touches[0].clientX;
-                mouse.y = e.touches[0].clientY;
-            }
-        });
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, width, height);
-            particles.forEach((p) => {
-                p.update();
-                p.draw();
-                // Connect particles to mouse/touch if close
-                if (mouse.x) {
-                    const dx = p.x - mouse.x;
-                    const dy = p.y - mouse.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    if (distance < 150) {
-                        ctx.strokeStyle = `rgba(0, 243, 255, ${1 - distance / 150})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(mouse.x, mouse.y);
-                        ctx.stroke();
-                    }
-                }
-            });
-            requestAnimationFrame(animateCanvas);
-        }
-        animateCanvas();
-
-        // --- 3D TILT EFFECT (Desktop Only) ---
-        // We disable this on mobile to improve scrolling performance
-        if (window.matchMedia("(min-width: 768px)").matches) {
-            const cards = document.querySelectorAll('.tilt-card');
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -5;
-                    const rotateY = ((x - centerX) / centerX) * 5;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
-                });
-            });
-        }
     </script>
 </body>
+
 </html>
