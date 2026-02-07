@@ -171,7 +171,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100dvh;
+            /* Modern mobile viewport height */
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -180,10 +181,13 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding-top: 60px;
-            /* Space for header */
+            padding-top: 80px;
+            /* Increased to clear header on all devices */
+            padding-bottom: 80px;
+            /* Space for bottom nav */
             overflow-y: auto;
-            /* Allow internal scrolling if content is too tall */
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
         }
 
         .page-section.active-page {
@@ -195,11 +199,13 @@
 
         /* Scrollbar styling for internal content */
         .page-section::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
+            /* Thinner for mobile */
         }
 
         .page-section::-webkit-scrollbar-track {
-            background: #000;
+            background: transparent;
+            /* Cleaner look */
         }
 
         .page-section::-webkit-scrollbar-thumb {
@@ -285,6 +291,29 @@
         .active-page .anim-delay-4 {
             transition-delay: 400ms;
         }
+
+        @media (max-width: 640px) {
+            .glass-panel {
+                padding: 1rem !important;
+                /* Force smaller padding on mobile */
+            }
+
+            h1 {
+                font-size: 1.8rem !important;
+            }
+
+            h2 {
+                font-size: 1.5rem !important;
+            }
+
+            h3 {
+                font-size: 1.2rem !important;
+            }
+
+            .tech-corners {
+                padding: 1.5rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -299,16 +328,21 @@
     <canvas id="canvas-container"></canvas>
 
     <!-- HEADER -->
+    <!-- HEADER -->
     <nav
-        class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 p-2 font-mono text-xs flex justify-between items-center px-6">
-        <div class="flex items-center gap-4">
-            <span class="text-green-500 animate-pulse">● SYS STATUS: ONLINE</span>
-            <span class="hidden md:inline text-gray-400">|</span>
-            <span class="hidden md:inline text-blue-400">LATENCY: 0.4ms</span>
+        class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/10 p-2 font-mono text-xs flex justify-between items-center px-4 md:px-6">
+        <div class="flex items-center gap-2 md:gap-4">
+            <span class="text-green-500 animate-pulse flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full inline-block"></span>
+                <span class="hidden sm:inline">SYS STATUS: ONLINE</span>
+                <span class="sm:hidden">ONLINE</span>
+            </span>
+            <span class="text-gray-400">|</span>
+            <span class="text-blue-400 hidden sm:inline">LATENCY: 0.4ms</span>
         </div>
         <div class="flex items-center gap-4">
             <span id="page-indicator" class="text-neon-blue font-bold">PAGE 01 / 07</span>
-            <div class="text-gray-500 hidden sm:block">SECURE_CONNECTION</div>
+            <div class="text-gray-500 hidden md:block">SECURE_CONNECTION</div>
         </div>
     </nav>
 
@@ -325,47 +359,53 @@
                 </div>
             </div>
 
-            <div class="text-center max-w-5xl z-10 anim-element px-4">
-                <h3 class="text-xl md:text-2xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of Baghdad</h3>
-                <h4 class="text-lg md:text-xl text-gray-500 mb-8 font-mono">College of Science | Department of
+            <div class="text-center max-w-5xl z-10 anim-element px-4 w-full">
+                <h3 class="text-sm md:text-xl lg:text-2xl tracking-[0.2em] text-gray-400 mb-2 uppercase">University of
+                    Baghdad</h3>
+                <h4 class="text-xs md:text-lg lg:text-xl text-gray-500 mb-6 md:mb-8 font-mono">College of Science |
+                    Department of
                     Artificial Intelligence</h4>
 
-                <div class="relative group inline-block mb-8">
+                <div class="relative group inline-block mb-6 md:mb-8 w-full max-w-sm md:max-w-none">
                     <div
                         class="absolute -inset-1 bg-gradient-to-r from-cyan-600 to-purple-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
                     </div>
                     <div
-                        class="relative bg-black ring-1 ring-gray-900/5 rounded-lg leading-none flex flex-col items-center justify-center p-8 md:p-12 tech-corners">
-                        <h1 class="text-3xl md:text-6xl font-bold neon-text-blue leading-tight glitch-wrapper mb-2">
+                        class="relative bg-black ring-1 ring-gray-900/5 rounded-lg leading-none flex flex-col items-center justify-center p-6 md:p-12 tech-corners">
+                        <h1
+                            class="text-2xl sm:text-4xl md:text-6xl font-bold neon-text-blue leading-tight glitch-wrapper mb-2">
                             <span class="glitch" data-text="AI & BIG DATA">AI & BIG DATA</span>
                         </h1>
-                        <h2 class="text-2xl md:text-4xl text-white tracking-widest block mb-4">INTRUSION DETECTION &
+                        <h2 class="text-sm sm:text-xl md:text-3xl lg:text-4xl text-white tracking-widest block mb-4">
+                            INTRUSION DETECTION &
                             ANOMALY MONITORING</h2>
-                        <div class="text-sm md:text-lg text-gray-400 font-mono">(A Hybrid Approach for Real-Time Threat
+                        <div class="text-xs sm:text-sm md:text-lg text-gray-400 font-mono">(A Hybrid Approach for
+                            Real-Time Threat
                             Detection)</div>
                     </div>
                 </div>
 
                 <div
-                    class="glass-panel p-6 max-w-3xl mx-auto mb-8 anim-element anim-delay-1 border-l-4 border-blue-500">
-                    <div class="text-xs text-blue-500 font-mono mb-2 text-left">THE VISION</div>
-                    <p class="text-lg text-gray-300 italic">"Transforming cybersecurity from a traditional reactive
+                    class="glass-panel p-4 md:p-6 max-w-3xl mx-auto mb-6 md:mb-8 anim-element anim-delay-1 border-l-4 border-blue-500">
+                    <div class="text-[10px] md:text-xs text-blue-500 font-mono mb-2 text-left">THE VISION</div>
+                    <p class="text-sm md:text-lg text-gray-300 italic">"Transforming cybersecurity from a traditional
+                        reactive
                         response to an intelligent, proactive defense system capable of processing millions of network
                         flows in real-time."</p>
                 </div>
 
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-left w-full">
-                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-2">
-                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
-                        <div class="font-bold text-xl">Yunis Jasim</div>
+                <div class="mt-4 md:mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-left w-full">
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-2">
+                        <div class="text-[10px] md:text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-base md:text-xl">Yunis Jasim</div>
                     </div>
-                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-3">
-                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
-                        <div class="font-bold text-xl">Zahraa Hussein</div>
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-3">
+                        <div class="text-[10px] md:text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-base md:text-xl">Zahraa Hussein</div>
                     </div>
-                    <div class="glass-panel p-4 tilt-card anim-element anim-delay-4">
-                        <div class="text-xs text-blue-500 font-mono mb-1">Created By</div>
-                        <div class="font-bold text-xl">Suliman Mohammed </div>
+                    <div class="glass-panel p-3 md:p-4 tilt-card anim-element anim-delay-4">
+                        <div class="text-[10px] md:text-xs text-blue-500 font-mono mb-1">Created By</div>
+                        <div class="font-bold text-base md:text-xl">Suliman Mohammed </div>
                     </div>
                 </div>
             </div>
@@ -374,49 +414,54 @@
         <!-- PAGE 2: PROBLEM & SOLUTION -->
         <section class="page-section" id="page-2">
             <div class="max-w-7xl mx-auto px-4 w-full">
-                <div class="text-center mb-10 anim-element">
-                    <h2 class="text-3xl font-bold text-white mb-2">PROBLEM CONTEXT & PROPOSED SOLUTION</h2>
-                    <p class="text-gray-400 font-mono text-sm">OBJECTIVE: Highlight scale of security challenge & Big
+                <div class="text-center mb-6 md:mb-10 anim-element">
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">PROBLEM CONTEXT & PROPOSED SOLUTION</h2>
+                    <p class="text-gray-400 font-mono text-xs md:text-sm">OBJECTIVE: Highlight scale of security
+                        challenge & Big
                         Data dimensions</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
 
                     <!-- Problem -->
                     <div
-                        class="glass-panel p-8 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col justify-center">
-                        <div class="flex justify-between items-start mb-6">
-                            <h2 class="text-3xl font-bold text-red-500"><i class="fas fa-exclamation-triangle mr-2"></i>
+                        class="glass-panel p-6 md:p-8 tilt-card border-red-500/20 group hover:bg-red-900/10 anim-element anim-delay-1 flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-4 md:mb-6">
+                            <h2 class="text-2xl md:text-3xl font-bold text-red-500"><i
+                                    class="fas fa-exclamation-triangle mr-2"></i>
                                 THE PROBLEM</h2>
                         </div>
-                        <p class="text-gray-300 text-lg leading-relaxed">
+                        <p class="text-gray-300 text-sm md:text-lg leading-relaxed">
                             Traditional Intrusion Detection Systems (IDS) rely on <span
                                 class="text-red-400 font-mono">static signatures</span>, rendering them ineffective
                             against Zero-Day Attacks and sophisticated, evolving threats.
                         </p>
-                        <div class="mt-6 p-4 bg-red-900/20 rounded border border-red-900/50">
-                            <div class="text-xs text-red-400 font-mono mb-1">CONSEQUENCE</div>
-                            <div class="text-white">Reactive response leaves networks vulnerable.</div>
+                        <div class="mt-4 md:mt-6 p-3 md:p-4 bg-red-900/20 rounded border border-red-900/50">
+                            <div class="text-[10px] md:text-xs text-red-400 font-mono mb-1">CONSEQUENCE</div>
+                            <div class="text-sm md:text-base text-white">Reactive response leaves networks vulnerable.
+                            </div>
                         </div>
                     </div>
 
                     <!-- Solution -->
                     <div
-                        class="glass-panel p-8 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col justify-center">
+                        class="glass-panel p-6 md:p-8 tilt-card border-cyan-500/20 group hover:bg-cyan-900/10 relative overflow-hidden anim-element anim-delay-2 flex flex-col justify-center">
                         <div class="absolute -right-10 -top-10 w-40 h-40 bg-cyan-500/20 blur-[50px] rounded-full"></div>
-                        <div class="flex justify-between items-start mb-6 relative z-10">
-                            <h2 class="text-3xl font-bold text-cyan-400"><i class="fas fa-shield-alt mr-2"></i> THE
+                        <div class="flex justify-between items-start mb-4 md:mb-6 relative z-10">
+                            <h2 class="text-2xl md:text-3xl font-bold text-cyan-400"><i
+                                    class="fas fa-shield-alt mr-2"></i> THE
                                 SOLUTION</h2>
                         </div>
-                        <p class="text-gray-300 text-lg leading-relaxed relative z-10">
+                        <p class="text-gray-300 text-sm md:text-lg leading-relaxed relative z-10">
                             A prototype IDS that integrates advanced <span class="text-cyan-400 font-mono">Machine
                                 Learning (XGBoost)</span> and <span class="text-purple-400 font-mono">Deep Learning
                                 (DNN)</span> algorithms with Big Data analytics to detect anomalies that rule-based
                             systems miss.
                         </p>
-                        <div class="mt-6 p-4 bg-cyan-900/20 rounded border border-cyan-500/30 relative z-10">
-                            <div class="text-xs text-cyan-400 font-mono mb-1">ADVANTAGE</div>
-                            <div class="text-white">Intelligent, Proactive, Real-time.</div>
+                        <div
+                            class="mt-4 md:mt-6 p-3 md:p-4 bg-cyan-900/20 rounded border border-cyan-500/30 relative z-10">
+                            <div class="text-[10px] md:text-xs text-cyan-400 font-mono mb-1">ADVANTAGE</div>
+                            <div class="text-sm md:text-base text-white">Intelligent, Proactive, Real-time.</div>
                         </div>
                     </div>
                 </div>
@@ -426,50 +471,52 @@
         <!-- PAGE 3: 5 V's -->
         <section class="page-section" id="page-3">
             <div class="max-w-7xl mx-auto px-4 w-full">
-                <div class="flex flex-col items-center justify-center gap-4 mb-12 anim-element">
-                    <h2 class="text-center text-3xl font-bold tracking-widest text-white">BIG DATA STRATEGY (THE 5 Vs)
+                <div class="flex flex-col items-center justify-center gap-2 md:gap-4 mb-8 md:mb-12 anim-element">
+                    <h2 class="text-center text-2xl md:text-3xl font-bold tracking-widest text-white">BIG DATA STRATEGY
+                        (THE 5 Vs)
                     </h2>
-                    <p class="text-gray-400 font-mono">Designed to handle core challenges within CIC-IDS2017 dataset</p>
+                    <p class="text-gray-400 font-mono text-xs md:text-base text-center">Designed to handle core
+                        challenges within CIC-IDS2017 dataset</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <div
                         class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element">
                         <div
-                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <i class="fas fa-database text-2xl text-blue-400"></i>
+                            class="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-database text-lg md:text-2xl text-blue-400"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-white">VOLUME</h3>
+                        <h3 class="font-bold text-base md:text-lg text-white">VOLUME</h3>
                         <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Managing over 2.8 million records
                             using representative <span class="text-blue-400">Stratified Sampling</span>.</p>
                     </div>
                     <div
                         class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-1">
                         <div
-                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <i class="fas fa-tachometer-alt text-2xl text-blue-400"></i>
+                            class="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-tachometer-alt text-lg md:text-2xl text-blue-400"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-white">VELOCITY</h3>
+                        <h3 class="font-bold text-base md:text-lg text-white">VELOCITY</h3>
                         <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Processing network traffic at
                             Gigabit speeds using optimized <span class="text-blue-400">Vectorized Operations</span>.</p>
                     </div>
                     <div
                         class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-2">
                         <div
-                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <i class="fas fa-network-wired text-2xl text-blue-400"></i>
+                            class="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-network-wired text-lg md:text-2xl text-blue-400"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-white">VARIETY</h3>
+                        <h3 class="font-bold text-base md:text-lg text-white">VARIETY</h3>
                         <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Handling 80+ features across
                             diverse protocols (<span class="text-blue-400">TCP, UDP, ICMP</span>).</p>
                     </div>
                     <div
                         class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-3">
                         <div
-                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <i class="fas fa-check-double text-2xl text-blue-400"></i>
+                            class="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-check-double text-lg md:text-2xl text-blue-400"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-white">VERACITY</h3>
+                        <h3 class="font-bold text-base md:text-lg text-white">VERACITY</h3>
                         <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Cleaning raw logs by removing
                             <span class="text-blue-400">Infinite & Missing values</span> for high-fidelity training.
                         </p>
@@ -477,10 +524,10 @@
                     <div
                         class="glass-panel p-6 text-center tilt-card group hover:-translate-y-2 transition-all duration-300 anim-element anim-delay-4">
                         <div
-                            class="w-16 h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
-                            <i class="fas fa-chart-line text-2xl text-blue-400"></i>
+                            class="w-12 h-12 md:w-16 md:h-16 mx-auto bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition">
+                            <i class="fas fa-chart-line text-lg md:text-2xl text-blue-400"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-white">VALUE</h3>
+                        <h3 class="font-bold text-base md:text-lg text-white">VALUE</h3>
                         <p class="text-xs text-gray-400 font-mono mt-2 leading-tight">Transforming raw logs into <span
                                 class="text-blue-400">actionable, visual security intelligence</span>.</p>
                     </div>
